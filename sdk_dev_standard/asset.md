@@ -51,7 +51,7 @@ amount和recvAddr一一对应
 |58012    | asset name error |
 |58004    | param error|
 |58023    | Invalid url|   
-|未知      | Ontology内部错误|  
+|4XXXX    | Ontology错误|  
 
 #### sendTransferFromMany
 * 描述
@@ -72,7 +72,7 @@ amount、sendAddr和password一一对应
 |58012    | asset name error |
 |58004    | param error|
 |58023    | Invalid url|   
-|未知      | Ontology内部错误|
+|4XXXX    | Ontology错误|
 
 #### sendOngTransferFrom
 * 描述
@@ -91,7 +91,7 @@ amount: 转移的数量
 |58012    | asset name error |
 |58004    | param error|
 |58023    | Invalid url|   
-|未知      | Ontology内部错误|
+|4XXXX    | Ontology错误|
 
 ## 交易说明
 

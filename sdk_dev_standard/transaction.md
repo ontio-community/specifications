@@ -4,12 +4,13 @@
 
 1. writeVarInt(long v)
 根据v的实际长度序列化成字节
+
 |v大小|序列化结果|长度|
 |:--|:--|:--|
-|v < 0xFD|(byte)v|1 bytes|
-|v <= 0xFFFF|0xfd(1 byte) + (LittleEndian)v in 2 bytes| 3 bytes |
-|v <= 0xFFFFFFFF|0xfe(1 byte) + (LittleEndian)v in 4 bytes| 5 bytes |
-|v > 0xFFFFFFFF|0xff(1 byte) + (LittleEndian)v in 8 bytes| 9 bytes |
+| v < 0xFD | (byte)v | 1 bytes |
+| v <= 0xFFFF | 0xfd(1 byte) + (LittleEndian)v in 2 bytes | 3 bytes |
+| v <= 0xFFFFFFFF | 0xfe(1 byte) + (LittleEndian)v in 4 bytes | 5 bytes |
+| v > 0xFFFFFFFF | 0xff(1 byte) + (LittleEndian)v in 8 bytes | 9 bytes |
 
 Java语言示例
 ```
@@ -29,6 +30,7 @@ if (v < 0xFD) {
 2. readVarInt(long max)
 第一个字节是max的长度
 long fb = Byte.toUnsignedLong(readByte());
+
 |第一个字节大小|读取方法|
 |:--|:--|
 |fb == 0xFD| 读取后面2个字节 |
