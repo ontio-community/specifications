@@ -3,6 +3,7 @@
 ## 序列化和反序列化标准
 
 1. writeVarInt(long v)
+
 根据v的实际长度序列化成字节
 
 |v大小|序列化结果|长度|
@@ -28,7 +29,9 @@ if (v < 0xFD) {
         }
 ```
 2. readVarInt(long max)
+
 第一个字节是max的长度
+
 long fb = Byte.toUnsignedLong(readByte());
 
 |第一个字节大小|读取方法|

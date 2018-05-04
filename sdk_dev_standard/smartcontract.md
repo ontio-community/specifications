@@ -325,7 +325,7 @@ Thread thread = new Thread(
                             }
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        throw new Exception("waitResult error" + e.getMessage());
                     }
                 }
 ```
