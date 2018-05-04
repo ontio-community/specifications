@@ -29,14 +29,27 @@ SHA512withEdDSA
 
 公私钥和签名的序列化方法请参考https://github.com/ontio/ontology-crypto/wiki/ECDSA
 
-* java获得公私钥对的示例
 
-方法一：
-根据加密算法名和算法需要的参数生成公私钥对。
-基本流程：
-指定hash散列算法和签名算法；
-获得加密算法框架实例并初始化；
-产生公私钥对；
+
+
+Account类功能：
+* 生成公私钥对：指定hash散列算法和签名算法，获得加密算法框架实例并初始化，产生公私钥对。
+* 根据公钥计算U160地址和base58地址
+* 公钥、私钥序列化
+* 私钥加解密
+
+```
+public class Account {
+    private KeyType keyType; //签名算法
+    private Object[] curveParams;//椭圆曲线域参数
+    private PrivateKey privateKey;//私钥
+    private PublicKey publicKey;//公钥
+    private Address addressU160;//U160地址，公钥转换而来
+    private SignatureScheme signatureScheme;//签名scheme
+```
+
+* java获得公私钥对的示例
+方法一，随机生成公私钥：
 ```
 public Account(SignatureScheme scheme) throws Exception {
         Security.addProvider(new BouncyCastleProvider());
@@ -53,7 +66,7 @@ public Account(SignatureScheme scheme) throws Exception {
                     throw new Exception(ErrorCode.InvalidParams);
                 }
                 String curveName = (String) params[0];
-                paramSpec = new ECGenParameterSpec(curveName);
+                paramSpec = new ECGenParameterSpec(curveName);//指定用于生成椭圆曲线 (EC) 域参数的参数集。
                 gen = KeyPairGenerator.getInstance("EC", "BC");
                 break;
             default:
@@ -61,7 +74,7 @@ public Account(SignatureScheme scheme) throws Exception {
                 throw new Exception(ErrorCode.UnsupportedKeyType);
         }
         gen.initialize(paramSpec, new SecureRandom());
-        KeyPair keyPair = gen.generateKeyPair();
+        KeyPair keyPair = gen.generateKeyPair();//随机生成公私钥对
         this.privateKey = keyPair.getPrivate();
         this.publicKey = keyPair.getPublic();
         this.keyType = keyType;
@@ -69,8 +82,8 @@ public Account(SignatureScheme scheme) throws Exception {
     }
 ```
 
-方法二：
-根据私钥生成公钥
+方法二，根据指定私钥生成公钥：
+
 
 ```
 //生成私钥
@@ -104,39 +117,6 @@ public Account(byte[] data, SignatureScheme scheme) throws Exception {
     }
 ```
 
-方法三：
-根据公钥获得Account
-```
-private void parsePublicKey(byte[] data) throws Exception {
-        if (data == null) {
-            throw new Exception(ErrorCode.NullInput);
-        }
-        if (data.length < 2) {
-            throw new Exception(ErrorCode.InvalidData);
-        }
-        this.privateKey = null;
-        this.publicKey = null;
-        this.keyType = KeyType.fromLabel(data[0]);
-        switch (this.keyType) {
-            case ECDSA:
-            case SM2:
-                Curve c = Curve.fromLabel(data[1]);
-                this.curveParams = new Object[]{c.toString()};
-                ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec(c.toString());
-                ECParameterSpec param = new ECNamedCurveSpec(spec.getName(), spec.getCurve(), spec.getG(), spec.getN());
-                ECPublicKeySpec pubSpec = new ECPublicKeySpec(
-                        ECPointUtil.decodePoint(
-                                param.getCurve(),
-                                Arrays.copyOfRange(data, 2, data.length)),
-                        param);
-                KeyFactory kf = KeyFactory.getInstance("EC", "BC");
-                this.publicKey = kf.generatePublic(pubSpec);
-                break;
-            default:
-                throw new Exception(ErrorCode.UnknownKeyType);
-        }
-    }
-```
 
 ## 1.2 账户地址生成
 
@@ -185,23 +165,19 @@ public static Address addressFromPubKey(byte[] publicKey) {
         }
     }
     //根据多重公钥计算address
-  public static Address addressFromMultiPubKeys(int m, ECPoint... publicKeys) {
-        if(m<=0 || m > publicKeys.length || publicKeys.length > 24){
+   public static Address addressFromMultiPubKeys(int m, byte[]... publicKeys) throws Exception {
+        if (m <= 0 || m > publicKeys.length || publicKeys.length > 24) {
             throw new IllegalArgumentException();
         }
         try (ByteArrayOutputStream ms = new ByteArrayOutputStream()) {
             try (BinaryWriter writer = new BinaryWriter(ms)) {
-                writer.writeByte((byte)publicKeys.length);
-                writer.writeByte((byte)m);
-                ECPoint[] ecPoint = Arrays.stream(publicKeys).sorted((o1, o2) -> {
-                    if (o1.getXCoord().toString().compareTo(o2.getXCoord().toString()) <= 0) {
-                        return -1;
-                    }
-                    return 1;
-                }).toArray(ECPoint[]::new);
-                for(ECPoint publicKey:ecPoint) {
-                    writer.writeVarBytes(Helper.removePrevZero(publicKey.getXCoord().toBigInteger().toByteArray()));
-                    writer.writeVarBytes(Helper.removePrevZero(publicKey.getYCoord().toBigInteger().toByteArray()));
+                writer.writeByte((byte) publicKeys.length);
+                writer.writeByte((byte) m);
+
+                Arrays.sort(publicKeys, (a, b) -> Helper.toHexString(a).compareTo(Helper.toHexString(b)));
+                for (int i = 0; i < publicKeys.length; i++) {
+                    System.out.println(Helper.toHexString(publicKeys[i]));
+                    writer.writeVarBytes(publicKeys[i]);
                 }
                 writer.flush();
                 byte[] bys = Digest.hash160(ms.toByteArray());
@@ -221,4 +197,151 @@ public static Address addressFromPubKey(byte[] publicKey) {
         String codeHash = Helper.toHexString(hash);
         return codeHash;
     }
+```
+## 1.3 公私钥序列化
+私钥序列化：私钥转byte[]
+公钥序列化：keyType(1 byte) + Curve(1 byte) +  PublicKey Encoded
+
+```
+    public byte[] serializePrivateKey() throws Exception {
+        switch (this.keyType) {
+            case ECDSA:
+                BCECPrivateKey pri = (BCECPrivateKey) this.privateKey;
+                byte[] d = new byte[32];
+                if (pri.getD().toByteArray().length == 33) {
+                    System.arraycopy(pri.getD().toByteArray(), 1, d, 0, 32);
+                } else {
+                    return pri.getD().toByteArray();
+                }
+                return d;
+            default:
+                // should not reach here
+                throw new Exception(ErrorCode.UnknownKeyType);
+        }
+    }
+    
+    public enum KeyType {
+       ECDSA(0x12),
+       SM2(0x13),
+       EDDSA(0x14);
+    }
+    public enum Curve {
+        P224(1, "P-224"),
+        P256(2, "P-256"),
+        P384(3, "P-384"),
+        P512(4, "P-512"),
+        SM2P256V1(20, "sm2p256v1");
+    }
+        public byte[] serializePublicKey() {
+            ByteArrayOutputStream bs = new ByteArrayOutputStream();
+            bs.write(this.keyType.getLabel());
+            try {
+                switch (this.keyType) {
+                    case ECDSA:
+                        BCECPublicKey pub = (BCECPublicKey) publicKey;
+                        bs.write(Curve.valueOf(pub.getParameters().getCurve()).getLabel());
+                        bs.write(pub.getQ().getEncoded(true));
+                        break;
+                    default:
+                        // Should not reach here
+                        throw new Exception(ErrorCode.UnknownKeyType);
+                }
+            } catch (Exception e) {
+                // Should not reach here
+                e.printStackTrace();
+                return null;
+            }
+            return bs.toByteArray();
+        }
+```
+
+## 1.4 私钥加解密
+
+采用AES的CTR 模式,参数如下：
+| Notation | Description | 
+|:-- |:---|
+| A      |The account address    | 
+|sk      |The private key |
+|H       |Hash function|
+|IV      |Initial vector used in block cipher                    |
+|a[i:j] |the sub-array of byte array a from the index i to j-1   |
+
+
+| Parameter | Description | 
+|:-- |:---|
+| r      |the block size   |  8 |
+|N      |the CPU/Memory cost |  16384 |
+|p       |parallelization| 8 |
+|dkLen      |byte length of the output               | fixed to 64
+|salt |a randomly generated byte sequence  |  |
+|P |the user chosen password |  |
+
+h = H(H(A))
+salt = h[0:4]
+k = scrypt(r, N, p, dkLen, salt, P), where dkLen is fixed to 64
+IV = k[0:16]
+e = k[32:64], as the AES key
+c = AESEncrypt(IV, e, sk), output c
+
+加密：
+```
+    public String exportCtrEncryptedPrikey(String passphrase, int n) {
+        int N = n;  // the CPU/Memory cost
+        int r = 8; // block size
+        int p = 8; // parallelization
+        int dkLen = 64; //byte length of the output
+        Address script_hash = Address.addressFromPubKey(serializePublicKey());
+        String address = script_hash.toBase58();
+
+        byte[] addresshashTmp = Digest.sha256(Digest.sha256(address.getBytes()));
+        byte[] addresshash = Arrays.copyOfRange(addresshashTmp, 0, 4);
+        //使用SCRYPT生成密钥
+        byte[] derivedkey = SCrypt.generate(passphrase.getBytes(StandardCharsets.UTF_8), addresshash, N, r, p, dkLen);
+
+        byte[] derivedhalf2 = new byte[32];
+        byte[] iv = new byte[16];  //初始化向量 (IV)
+        System.arraycopy(derivedkey, 0, iv, 0, 16);
+        System.arraycopy(derivedkey, 32, derivedhalf2, 0, 32);
+        try {
+            SecretKeySpec skeySpec = new SecretKeySpec(derivedhalf2, "AES");
+            Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
+            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, new IvParameterSpec(iv));
+            byte[] encryptedkey = cipher.doFinal(serializePrivateKey());
+            return new String(Base64.getEncoder().encode(encryptedkey));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+```
+
+解密：
+```
+    public static String getCtrDecodedPrivateKey(String encryptedPriKey, String passphrase, String address, int n, SignatureScheme scheme) throws Exception {
+        if (encryptedPriKey == null) {
+            throw new NullPointerException();
+        }
+        byte[] encryptedkey = Base64.getDecoder().decode(encryptedPriKey);
+
+        int N = n;
+        int r = 8;
+        int p = 8;
+        int dkLen = 64;
+
+        byte[] addresshashTmp = Digest.sha256(Digest.sha256(address.getBytes()));
+        byte[] addresshash = Arrays.copyOfRange(addresshashTmp, 0, 4);
+
+        byte[] derivedkey = SCrypt.generate(passphrase.getBytes(StandardCharsets.UTF_8), addresshash, N, r, p, dkLen);
+        byte[] derivedhalf2 = new byte[32];
+        byte[] iv = new byte[16];
+        System.arraycopy(derivedkey, 0, iv, 0, 16);
+        System.arraycopy(derivedkey, 32, derivedhalf2, 0, 32);
+
+        SecretKeySpec skeySpec = new SecretKeySpec(derivedhalf2, "AES");
+        Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
+        cipher.init(Cipher.DECRYPT_MODE, skeySpec, new IvParameterSpec(iv));
+        byte[] rawkey = cipher.doFinal(encryptedkey);
+        return Helper.toHexString(rawkey);
+    }
+
 ```
