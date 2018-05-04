@@ -31,11 +31,13 @@
 #### sendRegister
 
 * 描述
+向链上注册ontId
 * 输入参数
+Identity ident, String password
 * 输出参数
+
 * 异常处理
 
 |   错误码           |  发生场景        |                              
 |:--------          | :------                                               
 |10001       |  XXX                                       
-
