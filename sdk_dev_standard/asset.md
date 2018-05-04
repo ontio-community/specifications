@@ -1,6 +1,5 @@
 # 数字资产ONT&ONG 交易
 
-
 ## 接口列表
 
 | 方法名 | 参数 | 返回值类型 | 描述 |
@@ -10,6 +9,89 @@
 |sendTransferFromMany|String assetName, String[] sendAddr, String[] password, String recvAddr, long[] amount|String |多个地址向某个地址转移资产|
 |sendOngTransferFrom |String sendAddr, String password, String to, long amount                              |String |转移ong资产|
 
+## 接口定义
+
+#### sendTransfer
+
+* 描述
+转移资产
+* 输入参数
+String assetName, String sendAddr, String password, String recvAddr, long amount
+assetName: 资产名，
+sendAddr: 发送方地址，
+recvAddr: 接收方地址，
+amount: 转移的数量
+* 输出参数
+交易hash
+* 异常处理
+
+|   错误码 |  发生场景        |                              
+|:--------| :------                                               
+|58012    | asset name error |
+|58004    | param error|
+|58023    | Invalid url|   
+|未知      | Ontology内部错误|                                  
+
+#### sendTransferToMany
+* 描述
+向多个账户转移资产
+* 输入参数
+String assetName, String sendAddr, String password, String[] recvAddr, long[] amount
+assetName: 资产名，
+sendAddr: 发送方地址，
+recvAddr: 接收方地址，
+amount: 转移的数量
+amount和recvAddr一一对应
+* 输出参数
+交易hash
+* 异常处理
+
+|   错误码 |  发生场景        |                              
+|:--------| :------                                               
+|58012    | asset name error |
+|58004    | param error|
+|58023    | Invalid url|   
+|未知      | Ontology内部错误|  
+
+#### sendTransferFromMany
+* 描述
+从多个账户向某个账户转移资产
+* 输入参数
+String assetName, String[] sendAddr, String[] password, String recvAddr, long[] amount
+assetName: 资产名，
+sendAddr: 发送方地址，
+recvAddr: 接收方地址，
+amount: 转移的数量
+amount、sendAddr和password一一对应
+* 输出参数
+交易hash
+* 异常处理
+
+|   错误码 |  发生场景        |                              
+|:--------| :------                                               
+|58012    | asset name error |
+|58004    | param error|
+|58023    | Invalid url|   
+|未知      | Ontology内部错误|
+
+#### sendOngTransferFrom
+* 描述
+提取ong到某个账户
+* 输入参数
+String sendAddr, String password, String to, long amount
+sendAddr: 发送方地址，
+to: 接收方地址，
+amount: 转移的数量
+* 输出参数
+交易hash
+* 异常处理
+
+|   错误码 |  发生场景        |                              
+|:--------| :------                                               
+|58012    | asset name error |
+|58004    | param error|
+|58023    | Invalid url|   
+|未知      | Ontology内部错误|
 
 ## 交易说明
 
@@ -68,34 +150,12 @@ public class Contract implements Serializable {
 * 构造参数paramBytes
 
 ```
-State state = new State(senderAddress, receiveAddress, new BigInteger(String.valueOf(amount)));
+State state = new State(senderAddress, receiveAddress, new BigInteger(amount));
 Transfers transfers = new Transfers(new State[]{state});
 Contract contract = new Contract((byte) 0,null, Address.parse(contractAddr), "transfer", transfers.toArray());
 byte[] paramBytes = contarct.toArray();
 ```
 * 构造交易
-
-```
-public InvokeCode makeInvokeCodeTransaction(String codeAddr,String method,byte[] params, byte vmtype, Fee[] fees) throws SDKException {
-        if(vmtype == VmType.NEOVM.value()) {
-            Contract contract = new Contract((byte) 0, null, Address.parse(codeAddr), "", params);
-            params = Helper.addBytes(new byte[]{0x67}, contract.toArray());
-//            params = Helper.addBytes(params, new byte[]{0x69});
-//            params = Helper.addBytes(params, Helper.hexToBytes(codeAddress));
-        }else if(vmtype == VmType.WASMVM.value()) {
-            Contract contract = new Contract((byte) 1, null, Address.parse(codeAddr), method, params);
-            params = contract.toArray();
-        }
-        InvokeCode tx = new InvokeCode();
-        tx.attributes = new Attribute[1];
-        tx.attributes[0] = new Attribute();
-        tx.attributes[0].usage = AttributeUsage.Nonce;
-        tx.attributes[0].data = UUID.randomUUID().toString().getBytes();
-        tx.code = params;
-        tx.gasLimit = 0;
-        tx.vmType = vmtype;
-        tx.fee = fees;
-        return tx;
-    }
-```
+请参考智能合约构造交易部分
 * 发送交易
+请参考智能合约发送交易部分
