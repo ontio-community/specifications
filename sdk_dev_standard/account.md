@@ -257,7 +257,8 @@ public static Address addressFromPubKey(byte[] publicKey) {
 
 ## 1.4 私钥加解密
 
-采用AES的CTR 模式,参数如下：
+采用AES的CTR 模式,参数如下： 
+
 | Notation | Description | 
 |:-- |:---|
 | A      |The account address    | 
