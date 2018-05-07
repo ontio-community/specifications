@@ -143,13 +143,13 @@ fals 代表失败
 |53002    | Block deserialize failed|
 |4XXXX    | Ontology错误|
 
-11 Object       getBalance(String address)
+11 Object   getBalance(String address)
 * 描述
 根据账户address获得余额
 * 输入参数
-区块hash
+账户地址
 * 输出参数
-该区块hash对应的区块
+账户余额
 * 异常处理
 |   错误码 |  发生场景        |
 |:--------| :------      |
@@ -253,7 +253,7 @@ fals 代表失败
 * 输入参数
 codeHash是部署的合约的codeAddress,key要使用十六进制字符串
 * 输出参数
-String
+合约的key存储的数据，String类型的值
 * 异常处理
 |   错误码 |  发生场景      |
 |:--------| :------      |

@@ -19,6 +19,7 @@
 String assetName, String sendAddr, String password, String recvAddr, long amount
 assetName: 资产名，
 sendAddr: 发送方地址，
+password: 发送方密码，
 recvAddr: 接收方地址，
 amount: 转移的数量
 * 输出参数
@@ -39,8 +40,9 @@ amount: 转移的数量
 String assetName, String sendAddr, String password, String[] recvAddr, long[] amount
 assetName: 资产名，
 sendAddr: 发送方地址，
-recvAddr: 接收方地址，
-amount: 转移的数量
+password:发送方密码，
+recvAddr: 接收方地址数组，
+amount: 转移的数量数组
 amount和recvAddr一一对应
 * 输出参数
 交易hash
@@ -59,9 +61,10 @@ amount和recvAddr一一对应
 * 输入参数
 String assetName, String[] sendAddr, String[] password, String recvAddr, long[] amount
 assetName: 资产名，
-sendAddr: 发送方地址，
+sendAddr: 发送方地址数组，
+password: 发送方密码数组，
 recvAddr: 接收方地址，
-amount: 转移的数量
+amount: 转移的数量数组
 amount、sendAddr和password一一对应
 * 输出参数
 交易hash
@@ -80,6 +83,7 @@ amount、sendAddr和password一一对应
 * 输入参数
 String sendAddr, String password, String to, long amount
 sendAddr: 发送方地址，
+password: 发送方密码，
 to: 接收方地址，
 amount: 转移的数量
 * 输出参数

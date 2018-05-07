@@ -2,7 +2,7 @@
 
 ## 4 智能合约交易
 
-目前Ontology链上可以运行Native、NEO和WASM合约，SDK要实现NEO和WASM合约的部署和调用交易。
+目前Ontology链上可以运行Native、NEO和WASM合约，SDK要实现NEO和WASM合约的部署和调用交易，同时要实现Native合约的调用交易。
 > Note: 以下代码均是参考代码
 
 * Transaction类字段如下
@@ -40,7 +40,7 @@ AbiInfo abiinfo = JSON.parseObject(abi, AbiInfo.class);
 ```
 2. 构造参数
 
-将函数参数转换成虚拟机可以执行的字节码，详细的字节码数据请查看本文当末尾。
+将函数参数转换成虚拟机可以执行的字节码，详细的字节码数据请查看附件[附件](appendix.md)。
 假设调用某合约中函数需要如下参数：
 函数名，参数1，参数2
 转换成虚拟机能够识别的字节码：
