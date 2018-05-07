@@ -2,7 +2,7 @@
 
 [账户及密钥管理规范](account.md)
 
-[交易规范](transcation.md)
+[交易规范](transaction.md)
 
 [链交互功能规范](opchain.md)
 
@@ -12,5 +12,4 @@
 
 [智能合约支持规范](smartcontract.md)
 
-
-
+[附件](appendix.md)
