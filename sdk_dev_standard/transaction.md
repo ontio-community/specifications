@@ -65,6 +65,7 @@ writeVarInt(v.length);
 writer.write(v);
 ```
 4. WriteString(String v)
+
 序列化结果：v转换成字节数组的长度序列化 + v转换成字节数组
 Java语言示例
 ```
@@ -73,18 +74,24 @@ writeVarInt(vBytes.length);
 writer.write(vBytes);
 ```
 5. readVarBytes()
-首先读取第一个字节，
-如果第一个字节是0xFD,就读后面的2个字节
-如果第一个字节是0xFE,就读后面的4个字节
-如果第一个字节是0xFF,就读后面的8个字节
-否则，就读1个字节
+
+首先读取字节数组的长度
+  读取第一个字节，
+  如果第一个字节是0xFD,就读后面的2个字节
+  如果第一个字节是0xFE,就读后面的4个字节
+  如果第一个字节是0xFF,就读后面的8个字节
+  否则，就读1个字节
+其次读取指定长度的字节
+
 Java代码示例
 ```
-readBytes((int)readVarInt(0X7fffffc7));
+int length = (int)readVarInt(0X7fffffc7)
+readBytes(length);
 ```
 > Note: 0X7fffffc7是最大值，如果比该值大直接抛异常
 
 6. ReadBytes(int count)
+
 读取固定长度的字节数组
 Java代码示例
 ```
