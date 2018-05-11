@@ -94,12 +94,29 @@ readBytes(length);
 
 读取固定长度的字节数组
 Java代码示例
+
 ```
 byte[] buffer = new byte[count];
 reader.readFully(buffer);
 ```
 
 ## 具体类的序列化和反序列化
+
+区块Block序列化和反序列化
+
+交易Transaction序列化和反序列化
+
+部署交易Deploy序列化和反序列化
+
+调用交易InvokeCode序列化和反序列化
+
+State的序列化和反序列化
+
+Transfer的序列化和反序列化
+
+TransferFrom的序列化和反序列化
+
+> Note: 由于序列化和反序列化的顺序一致，故只给出序列化的例子。
 
 * Block的序列化和反序列化
 
@@ -125,7 +142,12 @@ public class Block extends Inventory {
   }
 ```
 
-按照下面的顺序进行序列化和反序列化(以Java代码序列化为例)：
+按照下面的顺序进行序列化(以Java代码序列化为例，反序列化与序列化的顺序一样)：
+
+Block的序列化的步骤
+
+1. 序列化非签名的数据
+
 ```
 writer.writeInt(version);
 writer.writeSerializable(prevBlockHash);
@@ -136,14 +158,28 @@ writer.writeInt(height);
 writer.writeLong(consensusData);
 writer.writeVarBytes(consensusPayload);
 writer.writeSerializable(nextBookkeeper);
+```
+
+2. 序列化bookkeepers
+
+```
 writer.writeVarInt(bookkeepers.length);
 for(int i=0;i<bookkeepers.length;i++) {
     writer.writeVarBytes(bookkeepers[i]);
 }
+```
+
+3. 序列化签名数据
+
+```
 writer.writeVarInt(sigData.length);
 for (int i = 0; i < sigData.length; i++) {
     writer.writeVarBytes(Helper.hexToBytes(sigData[i]));
 }
+```
+4. 序列化交易列表
+
+```
 writer.writeInt(transactions.length);
 for(int i=0;i<transactions.length;i++) {
     writer.writeSerializable(transactions[i]);
@@ -151,29 +187,38 @@ for(int i=0;i<transactions.length;i++) {
 ```
 
 * Transaction的序列化和反序列化
+
 Transaction的字段如下
+
 ```
 public byte version = 0;
 public final TransactionType txType;
 public int nonce = new Random().nextInt();
+public long gasPrice = 0;
+public long gasLimit = 0;
+public Address payer;
 public Attribute[] attributes;
-public Fee[] fee = new Fee[0];
-public long networkFee;
 public Sig[] sigs = new Sig[0];
 ```
-序列化顺序是，反序列化请参考序列化
+
+Transaction序列化顺序如下：
+
 ```
 writer.writeByte(version);
 writer.writeByte(txType.value());
 writer.writeInt(nonce);
+writer.writeLong(gasPrice);
+writer.writeLong(gasLimit);
+writer.writeSerializable(payer);
 serializeExclusiveData(writer);//子类自有字段的序列化
 writer.writeSerializableArray(attributes);
-writer.writeSerializableArray(fee);
-writer.writeLong(networkFee);
 writer.writeSerializableArray(sigs);
 ```
 
+serializeExclusiveData是Transaction子类自有字段的序列化
+
 * DeployCode交易的序列化和反序列化
+
 DeployCode交易是Transaction的子类，DeployCode继承自Transaction的字段的序列化顺序不变。
 DeployCode自有字段如下
 ```
@@ -186,7 +231,9 @@ public String author;
 public String email;
 public String description;
 ```
+
 DeployCode自有字段的序列化顺序如下,反序列化顺序和序列化顺序一致。
+
 ```
 writer.writeByte(vmType);
 writer.writeVarBytes(code);
@@ -199,17 +246,81 @@ writer.writeVarString(description);
 ```
 
 * InvokeCode交易的序列化和反序列化
-InvokeCode自有字段如下
+
+InvokeCode交易是Transac的子类，自有字段如下
+
 ```
 public long gasLimit;
 public byte vmType;
 public byte[] code;
 ```
 
-InvokeCode交易是Transaction的子类，InvokeCode继承自Transaction的字段的序列化顺序不变。
+InvokeCode继承自Transaction的字段的序列化顺序不变。
 InvokeCode自有字段的序列化顺序如下,反序列化顺序和序列化顺序一致。
+
 ```
 writer.writeLong(gasLimit);
 writer.writeByte(vmType);
 writer.writeVarBytes(code);
+```
+
+* State的序列化和反序列化
+State类的字段如下：
+
+```
+public class State implements Serializable {
+    public byte version;
+    public Address from;
+    public Address to;
+    public long value;
+  }
+  ...
+```
+
+序列化顺序如下：
+```
+writer.writeByte((byte)0);
+writer.writeSerializable(from);
+writer.writeSerializable(to);
+writer.writeLong(value);
+```
+
+* Transfers类的序列化和反序列化
+
+Transfers类的字段如下：
+```
+public class Transfers implements Serializable {
+    public byte version = 0;
+    public State[] states;
+    ...
+  }
+```
+
+Transfers类的序列化顺序如下：
+
+```
+writer.writeByte(version);
+writer.writeSerializableArray(states);
+```
+
+TransferFrom类的序列化和反序列化
+TransferFrom类的字段如下：
+
+```
+public class TransferFrom implements Serializable {
+    public byte version;
+    public Address sender;
+    public Address from;
+    public Address to;
+    public long value;
+  }
+```
+
+TransferFrom类的序列化顺序如下：
+```
+writer.writeByte((byte)0);
+writer.writeSerializable(sender);
+writer.writeSerializable(from);
+writer.writeSerializable(to);
+writer.writeLong(value);
 ```
