@@ -2,7 +2,7 @@
 
 ## 4 智能合约交易
 
-目前Ontology链上可以运行Native、NEO和WASM合约，SDK要实现NEO和WASM合约的部署和调用交易，同时要实现Native合约的调用交易。
+目前Ontology链上可以运行Native和NEO合约，SDK要实现NEO合约的部署和调用交易，同时要实现Native合约的调用交易。
 > Note: 以下代码均是参考代码
 
 * Transaction类字段如下
@@ -197,74 +197,7 @@ public String sendTransaction(boolean preExec, String action, String version, St
     }
 ```
 
-### 4.2 Wasm合约构造交易
-
-  1 构造调用合约中的方法需要的参数；
-
-依次将参数的值和类型放入集合中，然后转换成json字符串
-
-  ```
-  //合约函数中需要的参数json字符串
-  public String buildWasmContractJsonParam(Object[] objs) {
-        List params = new ArrayList();
-        for (int i = 0; i < objs.length; i++) {
-            Object val = objs[i];
-            Map map = new HashMap();
-            map.put("type",val.Type());
-            map.put("value",val.value());
-            params.add(map);
-            ...
-        }
-        Map result = new HashMap();
-        result.put("Params",params);
-        return JSON.toJSONString(result);
-    }
-  ```
-
-  2 构造交易
-输入参数说明: codeAddress是智能合约address，method是调用的合约函数名，params参数的字节形式，VmType.WASMVM.value() wasm合约类型值，
-基本流程：
-a 根据虚拟机类型构造params
-b 实例化InvokeCode
-```
-//需要的参数：合约hash，合约函数名，虚拟机类型，费用实例
-public InvokeCode makeInvokeCodeTransaction(String codeAddr,String method,byte[] params, byte vmtype, Fee[] fees) throws SDKException {
-        //根据虚拟机类型构造params
-        if(vmtype == VmType.NEOVM.value()) {
-            Contract contract = new Contract((byte) 0, null, Address.parse(codeAddr), "", params);
-            params = Helper.addBytes(new byte[]{0x67}, contract.toArray());
-        }else if(vmtype == VmType.WASMVM.value()) {
-            Contract contract = new Contract((byte) 1, null, Address.parse(codeAddr), method, params);
-            params = contract.toArray();
-        }
-        //实例化InvokeCode
-        InvokeCode tx = new InvokeCode();
-        tx.code = params;  
-        tx.vmType = vmtype;
-        ...
-        return tx;
-    }
-```
-
-  3 交易签名(如果是预执行不需要签名)；
-    和Neo合约中一样
-
-* 示例：
-
-```
-//设置要调用的合约地址codeAddress
-ontSdk.getSmartcodeTx().setCodeAddress(codeAddress);
-String funcName = "add";
-//构造合约函数需要的参数
-String params = ontSdk.getSmartcodeTx().buildWasmContractJsonParam(new Object[]{20,30});
-//指定虚拟机类型构造交易
-Transaction tx = ontSdk.getSmartcodeTx().makeInvokeCodeTransaction(ontSdk.getSmartcodeTx().getCodeAddress(),funcName,params.getBytes(),VmType.WASMVM.value(),new Fee[0]);
-//发送交易
-ontSdk.getConnectMgr().sendRawTransaction(tx.toHexString());
-
-```
-
-### 4.3 智能合约执行过程推送
+### 4.2 智能合约执行过程推送
 
 创建websocket线程，解析推送结果。
 
@@ -331,7 +264,7 @@ Thread thread = new Thread(
 ```
 
 
-* 4 每6秒发送一次心跳程序，维持socket链接
+* 4 每隔一段时间发送一次心跳程序，维持socket链接
 
 
 ```
