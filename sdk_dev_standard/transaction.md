@@ -2,7 +2,7 @@
 
 ## 序列化和反序列化标准
 
-发送交易的时候，参数需要序列化成十六进制字符串的格式，下面会先介绍基本数据类型的序列化和反序列化，然后介绍具体类的序列化
+发送交易的时候，参数需要序列化成十六进制字符串的格式，下面会先介绍基本数据类型的序列化和反序列化，然后介绍具体类的序列化和反序列化
 
 ### 基本数据类型的序列化和反序列化
 
@@ -32,6 +32,7 @@ if (v < 0xFD) {
             writeLong(v);
         }
 ```
+
 2. readVarInt(long max)
 
 第一个字节是max的长度
@@ -97,6 +98,7 @@ readBytes(length);
 6. ReadBytes(int count)
 
 读取固定长度的字节数组
+
 Java代码示例
 
 ```
@@ -106,23 +108,23 @@ reader.readFully(buffer);
 
 ### 具体类的序列化和反序列化
 
-区块Block序列化和反序列化
+1. 区块Block序列化和反序列化
 
-交易Transaction序列化和反序列化
+2. 交易Transaction序列化和反序列化
 
-部署交易Deploy序列化和反序列化
+3. 部署交易Deploy序列化和反序列化
 
-调用交易InvokeCode序列化和反序列化
+4. 调用交易InvokeCode序列化和反序列化
 
-State的序列化和反序列化
+5. State的序列化和反序列化
 
-Transfer的序列化和反序列化
+6. Transfer的序列化和反序列化
 
-TransferFrom的序列化和反序列化
+7. TransferFrom的序列化和反序列化
 
 > Note: 由于序列化和反序列化的顺序一致，故只给出序列化的例子。
 
-* Block的序列化和反序列化
+1. Block的序列化和反序列化
 
 Block类字段如下
 ```
@@ -190,7 +192,7 @@ for(int i=0;i<transactions.length;i++) {
 }
 ```
 
-* Transaction的序列化和反序列化
+2. Transaction的序列化和反序列化
 
 Transaction的字段如下
 
@@ -221,7 +223,7 @@ writer.writeSerializableArray(sigs);
 
 serializeExclusiveData是Transaction子类自有字段的序列化
 
-* DeployCode交易的序列化和反序列化
+3. DeployCode交易的序列化和反序列化
 
 DeployCode交易是Transaction的子类，DeployCode继承自Transaction的字段的序列化顺序不变。
 DeployCode自有字段如下
@@ -249,7 +251,7 @@ writer.writeVarString(email);
 writer.writeVarString(description);
 ```
 
-* InvokeCode交易的序列化和反序列化
+4. InvokeCode交易的序列化和反序列化
 
 InvokeCode交易是Transac的子类，自有字段如下
 
@@ -268,7 +270,7 @@ writer.writeByte(vmType);
 writer.writeVarBytes(code);
 ```
 
-* State的序列化和反序列化
+5. State的序列化和反序列化
 
 State类的字段如下：
 
@@ -291,7 +293,7 @@ writer.writeSerializable(to);
 writer.writeLong(value);
 ```
 
-* Transfers类的序列化和反序列化
+6. Transfers类的序列化和反序列化
 
 Transfers类的字段如下：
 ```
@@ -309,7 +311,7 @@ writer.writeByte(version);
 writer.writeSerializableArray(states);
 ```
 
-* TransferFrom类的序列化和反序列化
+7. TransferFrom类的序列化和反序列化
 
 TransferFrom类的字段如下：
 
