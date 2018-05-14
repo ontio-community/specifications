@@ -118,10 +118,13 @@ AbiInfo abiinfo = JSON.parseObject(abi, AbiInfo.class);
 ```
 //根据虚拟机类型构造交易
 if(vmtype == VmType.NEOVM.value()) {
-   Contract contract = new Contract((byte) 0, null, Address.parse(codeAddr), "", params);
-   params = Helper.addBytes(new byte[]{0x67}, contract.toArray());
+    Contract contract = new Contract((byte) 0, null, Address.parse(codeAddr), "", params);
+    params = Helper.addBytes(new byte[]{0x67}, contract.toArray());
 }else if(vmtype == VmType.WASMVM.value()) {
     Contract contract = new Contract((byte) 1, null, Address.parse(codeAddr), method, params);
+    params = contract.toArray();
+} else if(vmtype == VmType.Native.value()) {
+    Contract contract = new Contract((byte) 0, null, Address.parse(codeAddr), method, params);
     params = contract.toArray();
 }
 InvokeCode tx = new InvokeCode();
@@ -132,7 +135,7 @@ tx.vmType = vmtype;
 
 4. 交易签名
 a 将交易对象序列化成字节数据
-序列化方法请参考[smartcontract](smartcontract.md)
+序列化方法请参考[transaction](transaction.md)
 b 对交易的字节数组进行两次sha256运算得到txhash
 c 对txHash进行签名
 
@@ -162,10 +165,10 @@ public class Sig implements Serializable {
     sigData 签名数据
 
 5. 发送交易
-  1 将交易实例转换成字节数组
+  1 将交易实例序列化成字节数组
   txBytes
   ```
-  //F是转换函数
+  //F是序列化函数
   byte[] txBytes = F(tx);
   ```
 

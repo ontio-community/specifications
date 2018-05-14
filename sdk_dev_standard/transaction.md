@@ -2,6 +2,10 @@
 
 ## 序列化和反序列化标准
 
+发送交易的时候，参数需要序列化成十六进制字符串的格式，下面会先介绍基本数据类型的序列化和反序列化，然后介绍具体类的序列化
+
+### 基本数据类型的序列化和反序列化
+
 1. writeVarInt(long v)
 
 根据v的实际长度序列化成字节
@@ -100,7 +104,7 @@ byte[] buffer = new byte[count];
 reader.readFully(buffer);
 ```
 
-## 具体类的序列化和反序列化
+### 具体类的序列化和反序列化
 
 区块Block序列化和反序列化
 
@@ -265,6 +269,7 @@ writer.writeVarBytes(code);
 ```
 
 * State的序列化和反序列化
+
 State类的字段如下：
 
 ```
@@ -278,6 +283,7 @@ public class State implements Serializable {
 ```
 
 序列化顺序如下：
+
 ```
 writer.writeByte((byte)0);
 writer.writeSerializable(from);
@@ -303,7 +309,8 @@ writer.writeByte(version);
 writer.writeSerializableArray(states);
 ```
 
-TransferFrom类的序列化和反序列化
+* TransferFrom类的序列化和反序列化
+
 TransferFrom类的字段如下：
 
 ```
