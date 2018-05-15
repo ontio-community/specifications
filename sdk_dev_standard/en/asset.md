@@ -29,10 +29,12 @@ Transaction hash
 
 | Error code | Occurrence scenario |                              
 |:--------| :------                                               
-|58012    | asset name error |
-|58004    | param error |
-|58023    | Invalid url |   
-| Unknown | Ontology internal error |                                  
+|58101    | asset name error |
+|58402    | Invalid url|  
+|58105    |OntAsset Error,amount is less than or equal to zero|   
+|51015    |Account Error,encryptedPriKey address password not match.|
+|4XXXX    | Ontology internal error|  
+                                
 
 #### sendTransferToMany
 * Description
@@ -51,10 +53,11 @@ Transaction hash
 
 | Error code | Occurrence scenario |                              
 |:--------| :------                                               
-|58012    | asset name error |
-|58004    | param error |
-|58023    | Invalid url |   
-| Unknown | Ontology error |  
+|58101    | asset name error |
+|58402    | Invalid url|  
+|58105    |OntAsset Error,amount is less than or equal to zero|   
+|51015    |Account Error,encryptedPriKey address password not match.|
+|4XXXX    | Ontology internal error|  
 
 #### sendTransferFromMany
 * Description
@@ -73,10 +76,11 @@ Transaction hash
 
 | Error code | Occurrence scenario |                              
 |:--------| :------                                               
-|58012    | asset name error |
-|58004    | param error|
-|58023    | Invalid url|   
-|4XXXX    | Ontology error|
+|58101    | asset name error |
+|58402    | Invalid url|  
+|58105    |OntAsset Error,amount is less than or equal to zero|   
+|51015    |Account Error,encryptedPriKey address password not match.|
+|4XXXX    | Ontology internal error|  
 
 #### sendOngTransferFrom
 * Description
@@ -93,10 +97,11 @@ Transaction hash
 
 | Error code | Occurrence scenario |                              
 |:--------| :------                                               
-|58012    | asset name error |
-|58004    | param error|
-|58023    | Invalid url|   
-|4XXXX    | Ontology error|
+|58101    | asset name error |
+|58402    | Invalid url|  
+|58105    |OntAsset Error,amount is less than or equal to zero|   
+|51015    |Account Error,encryptedPriKey address password not match.|
+|4XXXX    | Ontology internal error|  
 
 ## Transaction description
 
