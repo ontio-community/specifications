@@ -17,12 +17,19 @@
 * Description
 Transfer assets
 * Input parameters
+
 String assetName, String sendAddr, String password, String recvAddr, long amount
+
 assetName: Asset name，
+
 sendAddr: Sender address，
+
 password: Sender password，
+
 recvAddr: Receiver address，
+
 amount: The amount of transfer
+
 * Output parameters
 Transaction hash
 * Exception handling
