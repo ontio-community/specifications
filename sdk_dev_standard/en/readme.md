@@ -1,4 +1,5 @@
-# Ontology SDK Development Standard
+<h1 align="center">Ontology SDK Development Standard</h1>
+<p align="center" class="version">Version 0.7.0 </p>
 
 [Account and Key Management Specification](account.md)
 

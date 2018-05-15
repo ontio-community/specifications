@@ -1,4 +1,5 @@
-# 本体 SDK 开发标准
+<h1 align="center">智能合约开发标准 </h1>
+<p align="center" class="version">Version 0.7.0 </p>
 
 ## 4 智能合约交易
 
@@ -94,7 +95,7 @@ AbiInfo abiinfo = JSON.parseObject(abi, AbiInfo.class);
   如果字节数组的长度小于0x100，往栈中压入OP_PUSHDATA1(0x4C)，写入数组长度，然后写入数据数据
 
   如果字节数组的长度小于0x10000，往栈中压入OP_PUSHDATA2(0x4D)，写入数组长度，然后写入数据数据（详见下面例子）
-  
+
   如果字节数组的长度小于0x100000000L，往栈中压入OP_PUSHDATA4(0x4E)，写入数组长度，然后写入数据数据（详见下面例子）
 
   ```

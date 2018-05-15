@@ -1,4 +1,5 @@
-# 与链通信
+<h1 align="center">与链通信标准</h1>
+<p align="center" class="version">Version 0.7.0 </p>
 
 ## 3 与链通信
 

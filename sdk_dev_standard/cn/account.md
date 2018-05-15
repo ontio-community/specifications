@@ -1,4 +1,5 @@
-# 本体 SDK 开发标准
+<h1 align="center">账户基本功能标准</h1>
+<p align="center" class="version">Version 0.7.0 </p>
 
 
 
@@ -219,7 +220,7 @@ public static Address addressFromPubKey(byte[] publicKey) {
                 throw new Exception(ErrorCode.UnknownKeyType);
         }
     }
-    
+
     public enum KeyType {
        ECDSA(0x12),
        SM2(0x13),
@@ -257,18 +258,18 @@ public static Address addressFromPubKey(byte[] publicKey) {
 
 ## 1.4 私钥加解密
 
-采用AES的CTR 模式,参数如下： 
+采用AES的CTR 模式,参数如下：
 
-| Notation | Description | 
+| Notation | Description |
 |:-- |:---|
-| A      |The account address    | 
+| A      |The account address    |
 |sk      |The private key |
 |H       |Hash function|
 |IV      |Initial vector used in block cipher                    |
 |a[i:j] |the sub-array of byte array a from the index i to j-1   |
 
 
-| Parameter | Description | 
+| Parameter | Description |
 |:-- |:---|
 | r      |the block size   |  8 |
 |N      |the CPU/Memory cost |  16384 |

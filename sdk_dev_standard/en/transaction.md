@@ -1,4 +1,5 @@
-# Ontology SDK Development Standard
+<h1 align="center">Serialize and deserialize Standard</h1>
+<p align="center" class="version">Version 0.7.0 </p>
 
 ## Serialization and deserialization standard
 
@@ -79,11 +80,11 @@ If the first byte is 0xFD, read the next 2 bytes
 If the first byte is 0xFE, read the next 4 bytes
 If the first byte is 0xFF, read the next 8 bytes
 Otherwise, read 1 byte
-Java example 
+Java example
 ```
 readBytes((int)readVarInt(0X7fffffc7));
 ```
-> Note: 0X7fffffc7 is the maximum value. If a value is greater than it, an exception should be thrown. 
+> Note: 0X7fffffc7 is the maximum value. If a value is greater than it, an exception should be thrown.
 6. ReadBytes(int count)
 Read a fixed-length byte array
 
@@ -144,7 +145,7 @@ for(int i=0;i<transactions.length;i++) {
 }
 ```
 
-* Serialization and deserialization of transaction 
+* Serialization and deserialization of transaction
 Transaction field:
 ```
 public byte version = 0;
@@ -155,7 +156,7 @@ public Fee[] fee = new Fee[0];
 public long networkFee;
 public Sig[] sigs = new Sig[0];
 ```
-The order of serialization is as follows, and the order of deserialization please refer to serialization 
+The order of serialization is as follows, and the order of deserialization please refer to serialization
 ```
 writer.writeByte(version);
 writer.writeByte(txType.value());

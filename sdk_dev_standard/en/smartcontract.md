@@ -1,4 +1,5 @@
-# Ontology SDK Development Standard
+<h1 align="center">Smart Contract Development Standard</h1>
+<p align="center" class="version">Version 0.7.0 </p>
 
 ## 4 Smart contract transaction
 
@@ -59,7 +60,7 @@ Pushing parameters into the stack (take Java as an example)
       return add(ScriptOp.OP_0);
   }
   ```
-  
+
   - If the parameter is BigInteger,
 we need to convert the parameters in accordance with the little endian to byte[], and then convert byte[] to a BigInteger object, finally execute as follows:
 Judge if it is -1, if yes, push OP_1NEGATE(0x4F) into the stack
@@ -256,10 +257,10 @@ public InvokeCode makeInvokeCodeTransaction(String codeAddr,String method,byte[]
 * Example：
 
 ```
-//Set the contract address - codeAddress 
+//Set the contract address - codeAddress
 ontSdk.getSmartcodeTx().setCodeAddress(codeAddress);
 String funcName = "add";
-//Construct parameters required in the contract 
+//Construct parameters required in the contract
 String params = ontSdk.getSmartcodeTx().buildWasmContractJsonParam(new Object[]{20,30});
 //Specify the virtual machine type to construct transaction
 Transaction tx = ontSdk.getSmartcodeTx().makeInvokeCodeTransaction(ontSdk.getSmartcodeTx().getCodeAddress(),funcName,params.getBytes(),VmType.WASMVM.value(),new Fee[0]);

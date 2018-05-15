@@ -1,4 +1,5 @@
-# 本体 SDK 开发标准
+<h1 align="center">序列化和反序列化标准</h1>
+<p align="center" class="version">Version 0.7.0 </p>
 
 ## 序列化和反序列化标准
 

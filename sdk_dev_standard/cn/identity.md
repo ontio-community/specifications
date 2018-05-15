@@ -1,4 +1,6 @@
-# 数字身份SDK开发标准
+<h1 align="center">数字身份SDK开发标准</h1>
+<p align="center" class="version">Version 0.7.0 </p>
+
 
 数字身份相关介绍可参考[ONT ID 身份标识协议及信任框架](https://github.com/ontio/ontology-DID)。
 

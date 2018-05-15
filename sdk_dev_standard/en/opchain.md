@@ -1,4 +1,5 @@
-# Communication with the Chain
+<h1 align="center">Communication with the Chain Standard</h1>
+<p align="center" class="version">Version 0.7.0 </p>
 
 ## 3 Communication with the chain
 
@@ -141,7 +142,7 @@ The block corresponding to the height
 
 10 Block getBlock(String hash)
 * Description
-Get block by block hash 
+Get block by block hash
 * Input parameters
 Block hash
 * Output parameters
@@ -272,7 +273,7 @@ Get the stored data by contract's key
 * Input parameters
 codeHash is the codeAddress of the deployed contract, and key is a hexadecimal string
 * Output parameters
-The data stored by the contract's key, and the value type is string 
+The data stored by the contract's key, and the value type is string
 * Exception handling
 
 |  Error Code |  Occurrence Scenario        |

@@ -1,4 +1,5 @@
-# 数字资产ONT&ONG 交易
+<h1 align="center">数字资产ONT&ONG交易 </h1>
+<p align="center" class="version">Version 0.7.0 </p>
 
 ## 接口列表
 

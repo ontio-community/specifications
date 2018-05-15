@@ -1,4 +1,5 @@
-# 本体 SDK 开发标准
+<h1 align="center">本体 SDK 开发标准 </h1>
+<p align="center" class="version">Version 0.7.0 </p>
 
 [账户及密钥管理规范](account.md)
 

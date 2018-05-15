@@ -1,5 +1,5 @@
-# Ontology SDK Development Standard
-
+<h1 align="center">Ontology SDK Development Standard </h1>
+<p align="center" class="version">Version 0.7.0 </p>
 
 
 ## 1.1 Public and Private Key Pair Generation
@@ -33,7 +33,7 @@ For serialization method of public and private keys and signatures, please refer
 Account class function:
 * Generate public and private key pairs: Specify a hash algorithm and signature algorithm, obtain an instance of the encryption algorithm framework and initialize it, and generate public and private key pairs.
 * Calculate U160 address and base58 address based on public key
-* Serialization of public and private key 
+* Serialization of public and private key
 * Private key encryption and decryption
 
 ```
@@ -42,11 +42,11 @@ public class Account {
     private Object[] curveParams;//Elliptic curve domain parameters
     private PrivateKey privateKey;//Private key
     private PublicKey publicKey;//Public key
-    private Address addressU160;//U160 address, transferred from public key 
+    private Address addressU160;//U160 address, transferred from public key
     private SignatureScheme signatureScheme;//Signature scheme
 ```
 
-* An example of how java obtains public and private key pairs. 
+* An example of how java obtains public and private key pairs.
 Method 1, random generation of public and private keys:
 
 ```
@@ -219,7 +219,7 @@ Serialization of Public Key：keyType(1 byte) + Curve(1 byte) +  PublicKey Encod
                 throw new Exception(ErrorCode.UnknownKeyType);
         }
     }
-    
+
     public enum KeyType {
        ECDSA(0x12),
        SM2(0x13),
@@ -259,16 +259,16 @@ Serialization of Public Key：keyType(1 byte) + Curve(1 byte) +  PublicKey Encod
 
 Using AES's CTR mode, the parameters are as follows:
 
-| Notation | Description | 
+| Notation | Description |
 |:-- |:---|
-| A      |The account address    | 
+| A      |The account address    |
 |sk      |The private key |
 |H       |Hash function|
 |IV      |Initial vector used in block cipher                    |
 |a[i:j] |the sub-array of byte array a from the index i to j-1   |
 
 
-| Parameter | Description | 
+| Parameter | Description |
 |:-- |:---|
 | r      |the block size   |  8 |
 |N      |the CPU/Memory cost |  16384 |

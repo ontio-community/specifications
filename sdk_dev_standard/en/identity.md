@@ -1,4 +1,5 @@
-# Digital Identity SDK Development Standard
+<h1 align="center">Digital Identity SDK Development Standard</h1>
+<p align="center" class="version">Version 0.7.0 </p>
 
 For an introduction of digital identity, please refer to [ONT ID Identity Protocol and Trust Framework](https://github.com/ontio/ontology-DID).
 

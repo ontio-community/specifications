@@ -1,4 +1,5 @@
-# Digital Asset ONT&ONG Transaction
+<h1 align="center">Digital Asset ONT&ONG Transaction</h1>
+<p align="center" class="version">Version 0.7.0 </p>
 
 ## Interface list
 
@@ -43,7 +44,7 @@ sendAddr: Sender address，
 password: Sender password，
 recvAddr: Array of receiver address，
 amount: The amount array of transfer
-Amount and recvAddr correspond one by one 
+Amount and recvAddr correspond one by one
 * Output parameters
 Transaction hash
 * Exception handling
@@ -159,6 +160,6 @@ Contract contract = new Contract((byte) 0,null, Address.parse(contractAddr), "tr
 byte[] paramBytes = contarct.toArray();
 ```
 * Construct transaction
-Please refer to the section of construction transaction of smart contract 
-* Send transaction 
-Please refer to the section of send transaction of smart contract 
+Please refer to the section of construction transaction of smart contract
+* Send transaction
+Please refer to the section of send transaction of smart contract
