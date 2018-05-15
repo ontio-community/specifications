@@ -23,7 +23,6 @@ public abstract class Transaction extends Inventory {
 ```
 Native(0xff),
 NEOVM(0x80),
-WASMVM(0x90);
 ```
 
 ### 4.1 Neo合约构造交易
@@ -40,7 +39,7 @@ AbiInfo abiinfo = JSON.parseObject(abi, AbiInfo.class);
 ```
 2. 构造参数
 
-将函数参数转换成虚拟机可以执行的字节码，详细的字节码数据请查看附件[附件](appendix.md)。
+将函数参数转换成虚拟机可以执行的字节码，详细的字节码数据请查看[附件](appendix.md)。
 假设调用某合约中函数需要如下参数：
 函数名，参数1，参数2
 转换成虚拟机能够识别的字节码：
@@ -59,10 +58,15 @@ AbiInfo abiinfo = JSON.parseObject(abi, AbiInfo.class);
   }
   ```
   - 如果参数是BigInteger
+
   需要要将参数按照小端序转换成byte[],然后将byte[]转换成BigInteger对象，在进行如下操作：
+
   判断是不是-1,如果是，往栈中压入OP_1NEGATE(0x4F)
+
   判断是不是0,如果是，往栈中压入OP_0(0x00)
+
   判断是不是大于0并且小于等于16,如果是，往栈中压入ScriptOp.OP_1.getByte() - 1 + number.byteValue()
+
   其他的情况，往栈中压入该值的字节数组；
 
   ```
@@ -84,9 +88,13 @@ AbiInfo abiinfo = JSON.parseObject(abi, AbiInfo.class);
   ```
 
   - 如果参数是byte数组
+
   如果字节数组的长度小于OP_PUSHBYTES75，写入数组长度，然后写入数据数据
+
   如果字节数组的长度小于0x100，往栈中压入OP_PUSHDATA1(0x4C)，写入数组长度，然后写入数据数据
+
   如果字节数组的长度小于0x10000，往栈中压入OP_PUSHDATA2(0x4D)，写入数组长度，然后写入数据数据（详见下面例子）
+  
   如果字节数组的长度小于0x100000000L，往栈中压入OP_PUSHDATA4(0x4E)，写入数组长度，然后写入数据数据（详见下面例子）
 
   ```
@@ -114,6 +122,7 @@ AbiInfo abiinfo = JSON.parseObject(abi, AbiInfo.class);
   ```
 
 3. 构造交易
+
 根据不同的虚拟机类型构造交易
 ```
 //根据虚拟机类型构造交易
@@ -177,11 +186,13 @@ public class Sig implements Serializable {
   String txHex = toHexString(txBytes);
   ```
   3 发送交易(以restful为例)
+
 输入参数说明
 preExec true表示预执行，false表示非预执行
 action "sendrawtransaction"表示发送交易
 version 版本号，表示协议版本号
 data 交易参数
+
 ```
 public String sendTransaction(boolean preExec, String action, String version, String data) throws RestfulException {
         Map<String, String> params = new HashMap<String, String>();

@@ -16,85 +16,124 @@
 * 描述
 转移资产
 * 输入参数
+
 String assetName, String sendAddr, String password, String recvAddr, long amount
+
 assetName: 资产名，
+
 sendAddr: 发送方地址，
+
 password: 发送方密码，
+
 recvAddr: 接收方地址，
+
 amount: 转移的数量
+
 * 输出参数
 交易hash
 * 异常处理
 
-|   错误码 |  发生场景        |                              
+|   错误码 |  描述信息        |                              
 |:--------| :------                                               
-|58012    | asset name error |
-|58004    | param error|
-|58023    | Invalid url|   
-|未知      | Ontology内部错误|                                  
+|58101    | asset name error |
+|58402    | Invalid url|
+|58105    |OntAsset Error,amount is less than or equal to zero|   
+|51015    |Account Error,encryptedPriKey address password not match.|
+|4XXXX    | Ontology内部错误|                                  
 
 #### sendTransferToMany
 * 描述
 向多个账户转移资产
+
 * 输入参数
+
 String assetName, String sendAddr, String password, String[] recvAddr, long[] amount
+
 assetName: 资产名，
+
 sendAddr: 发送方地址，
+
 password:发送方密码，
+
 recvAddr: 接收方地址数组，
+
 amount: 转移的数量数组
+
 amount和recvAddr一一对应
+
 * 输出参数
 交易hash
 * 异常处理
 
 |   错误码 |  发生场景        |                              
 |:--------| :------                                               
-|58012    | asset name error |
-|58004    | param error|
-|58023    | Invalid url|   
+|58101    | asset name error |
+|58402    | Invalid url|  
+|58105    |OntAsset Error,amount is less than or equal to zero|   
+|51015    |Account Error,encryptedPriKey address password not match.|
 |4XXXX    | Ontology错误|  
 
 #### sendTransferFromMany
 * 描述
 从多个账户向某个账户转移资产
+
 * 输入参数
+
 String assetName, String[] sendAddr, String[] password, String recvAddr, long[] amount
+
 assetName: 资产名，
+
 sendAddr: 发送方地址数组，
+
 password: 发送方密码数组，
+
 recvAddr: 接收方地址，
+
 amount: 转移的数量数组
+
 amount、sendAddr和password一一对应
+
 * 输出参数
+
 交易hash
+
 * 异常处理
 
 |   错误码 |  发生场景        |                              
 |:--------| :------                                               
-|58012    | asset name error |
-|58004    | param error|
-|58023    | Invalid url|   
+|58101    | asset name error |
+|58402    | Invalid url|   
+|58105    |OntAsset Error,amount is less than or equal to zero|   
+|51015    |Account Error,encryptedPriKey address password not match.|
 |4XXXX    | Ontology错误|
 
 #### sendOngTransferFrom
 * 描述
 提取ong到某个账户
 * 输入参数
+
 String sendAddr, String password, String to, long amount
+
 sendAddr: 发送方地址，
+
 password: 发送方密码，
+
 to: 接收方地址，
+
 amount: 转移的数量
+
 * 输出参数
+
 交易hash
+
 * 异常处理
 
 |   错误码 |  发生场景        |                              
 |:--------| :------                                               
-|58012    | asset name error |
-|58004    | param error|
-|58023    | Invalid url|   
+|58101    | asset name error |
+|58402    | Invalid url|   
+|58105    |OntAsset Error,amount is less than or equal to zero|   
+|51015    |Account Error,encryptedPriKey address password not match.|
 |4XXXX    | Ontology错误|
 
 ## 交易说明
@@ -135,16 +174,16 @@ Contarct字段如下
 public class Contract implements Serializable {
     public byte version;
     public byte[] code = new byte[0];
-    public Address constracHash;
+    public Address contractHash;
     public String method;
     public byte[] args;
 
-    public Contract(byte version,byte[] code,Address constracHash, String method,byte[] args){
+    public Contract(byte version,byte[] code,Address contractHash, String method,byte[] args){
         this.version = version;
         if (code != null) {
             this.code = code;
         }
-        this.constracHash = constracHash;
+        this.contractHash = contractHash;
         this.method = method;
         this.args = args;
     }
@@ -154,7 +193,7 @@ public class Contract implements Serializable {
 * 构造参数paramBytes
 
 ```
-State state = new State(senderAddress, receiveAddress, new BigInteger(amount));
+State state = new State(senderAddress, receiveAddress, amount);
 Transfers transfers = new Transfers(new State[]{state});
 Contract contract = new Contract((byte) 0,null, Address.parse(contractAddr), "transfer", transfers.toArray());
 byte[] paramBytes = contarct.toArray();

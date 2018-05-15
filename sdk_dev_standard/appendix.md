@@ -20,7 +20,7 @@
 | 44001 | UNKNOWN_TRANSACTION | 找不到交易 |
 | 44002 | UNKNOWN_ASSET | 找不到资产 |
 | 44003 | UNKNOWN_BLOCK | 找不到块 |
-| 44004 | UNKNWN_CONTRACT | 找不到合约 |
+| 44004 | UNKNOWN_CONTRACT | 找不到合约 |
 | 45001 | INTERNAL_ERROR | 内部错误 |
 | 47001 | SMARTCODE_ERROR| 智能合约错误 |
 |51001  |  InvalidParams |Account Error,invalid params|
