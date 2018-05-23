@@ -56,8 +56,16 @@ public Account(SignatureScheme scheme) throws Exception {
         AlgorithmParameterSpec paramSpec;
         KeyType keyType;
         signatureScheme = scheme;
+        if (scheme == SignatureScheme.SM3WITHSM2) {
+            this.keyType = KeyType.SM2;
+            this.curveParams = new Object[]{Curve.SM2P256V1.toString()};
+        } else if (scheme == SignatureScheme.SHA256WITHECDSA) {
+            this.keyType = KeyType.ECDSA;
+            this.curveParams = new Object[]{Curve.P256.toString()};
+        }
         switch (scheme) {
             case SHA256WITHECDSA:
+            case SM3WITHSM2:
                 keyType = KeyType.ECDSA;
                 Object[] params = new Object[]{Curve.P256.toString()};
                 curveParams = params;
@@ -65,7 +73,7 @@ public Account(SignatureScheme scheme) throws Exception {
                     throw new Exception(ErrorCode.InvalidParams);
                 }
                 String curveName = (String) params[0];
-                paramSpec = new ECGenParameterSpec(curveName);//Specify the set of parameters used to generate the elliptic curve (EC) domain parameters.
+                paramSpec = new ECGenParameterSpec(curveName);//指定用于生成椭圆曲线 (EC) 域参数的参数集。
                 gen = KeyPairGenerator.getInstance("EC", "BC");
                 break;
             default:
@@ -91,11 +99,16 @@ byte[] privateKey = ECC.generateKey();
 public Account(byte[] data, SignatureScheme scheme) throws Exception {
         Security.addProvider(new BouncyCastleProvider());
         signatureScheme = scheme;
+        if (scheme == SignatureScheme.SM3WITHSM2) {
+            this.keyType = KeyType.SM2;
+            this.curveParams = new Object[]{Curve.SM2P256V1.toString()};
+        } else if (scheme == SignatureScheme.SHA256WITHECDSA) {
+            this.keyType = KeyType.ECDSA;
+            this.curveParams = new Object[]{Curve.P256.toString()};
+        }
         switch (scheme) {
             case SHA256WITHECDSA:
-                this.keyType = KeyType.ECDSA;
-                Object[] params = new Object[]{Curve.P256.toString()};
-                curveParams = params;
+            case SM3WITHSM2:
                 BigInteger d = new BigInteger(1, data);
                 ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec((String) params[0]);
                 ECParameterSpec paramSpec = new ECNamedCurveSpec(spec.getName(), spec.getCurve(), spec.getG(), spec.getN());
