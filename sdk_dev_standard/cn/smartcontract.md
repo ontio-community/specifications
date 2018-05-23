@@ -14,8 +14,9 @@ public abstract class Transaction extends Inventory {
     public final TransactionType txType;
     public int nonce = new Random().nextInt();
     public Attribute[] attributes;
-    public Fee[] fee = new Fee[0];
-    public long networkFee;
+    public long gasPrice = 0;
+    public long gasLimit = 0;
+    public Address payer = new Address();
     public Sig[] sigs = new Sig[0];
   }
 ```

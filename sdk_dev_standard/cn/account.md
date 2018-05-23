@@ -2,7 +2,6 @@
 <p align="center" class="version">Version 0.7.0 </p>
 
 
-
 ## 1.1 公私钥对生成
 
 目前Ontology支持的算法
@@ -58,8 +57,16 @@ public Account(SignatureScheme scheme) throws Exception {
         AlgorithmParameterSpec paramSpec;
         KeyType keyType;
         signatureScheme = scheme;
+        if (scheme == SignatureScheme.SM3WITHSM2) {
+            this.keyType = KeyType.SM2;
+            this.curveParams = new Object[]{Curve.SM2P256V1.toString()};
+        } else if (scheme == SignatureScheme.SHA256WITHECDSA) {
+            this.keyType = KeyType.ECDSA;
+            this.curveParams = new Object[]{Curve.P256.toString()};
+        }
         switch (scheme) {
             case SHA256WITHECDSA:
+            case SM3WITHSM2:
                 keyType = KeyType.ECDSA;
                 Object[] params = new Object[]{Curve.P256.toString()};
                 curveParams = params;
@@ -93,11 +100,16 @@ byte[] privateKey = ECC.generateKey();
 public Account(byte[] data, SignatureScheme scheme) throws Exception {
         Security.addProvider(new BouncyCastleProvider());
         signatureScheme = scheme;
+        if (scheme == SignatureScheme.SM3WITHSM2) {
+            this.keyType = KeyType.SM2;
+            this.curveParams = new Object[]{Curve.SM2P256V1.toString()};
+        } else if (scheme == SignatureScheme.SHA256WITHECDSA) {
+            this.keyType = KeyType.ECDSA;
+            this.curveParams = new Object[]{Curve.P256.toString()};
+        }
         switch (scheme) {
             case SHA256WITHECDSA:
-                this.keyType = KeyType.ECDSA;
-                Object[] params = new Object[]{Curve.P256.toString()};
-                curveParams = params;
+            case SM3WITHSM2:
                 BigInteger d = new BigInteger(1, data);
                 ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec((String) params[0]);
                 ECParameterSpec paramSpec = new ECNamedCurveSpec(spec.getName(), spec.getCurve(), spec.getG(), spec.getN());
