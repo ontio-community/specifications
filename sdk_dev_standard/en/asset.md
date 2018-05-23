@@ -289,97 +289,97 @@ Asset balance
 
 #### queryName
 
-* 描述
+* Description
 
-查询资产名详细信息
+Query details about asset name
 
-* 输入参数
+* Input parameters
 
 String assetName
 
-* 输出参数
+* Output parameters
 
-资产名详细信息
+Details about asset name
 
-* 异常处理
+* Exception handling
 
-|   错误码 |  发生场景        |                              
+| Error code | Occurrence scenario |                             
 |:--------| :------                                               
 |58101    | asset name error |
 |58402    | Invalid url|   
-|4XXXX    | Ontology错误|
+|4XXXX    | Ontology error|
 
 #### querySymbol
 
-* 描述
+* Description
 
-查询资产symbol信息
+Query asset symbol information
 
-* 输入参数
+* Input parameters
 
 String assetName
 
-assetName: 资产名称
+assetName: Asset name
 
-* 输出参数
+* Output parameters
 
-资产symbol信息
+Asset symbol information
 
-* 异常处理
+* Exception handling
 
-|   错误码 |  发生场景        |                              
+| Error code | Occurrence scenario |                           
 |:--------| :------                                               
 |58101    | asset name error |
 |58402    | Invalid url|   
-|4XXXX    | Ontology错误|
+|4XXXX    | Ontology error|
 
 #### queryDecimals
 
-* 描述
+* Description
 
-查询精度
+Query precision
 
-* 输入参数
+* Input parameters
 
 String assetName
 
-assetName: 资产名
+assetName: Asset name
 
-* 输出参数
+* Output parameters
 
-资产精度
+Asset precision
 
-* 异常处理
+* Exception handling
 
-|   错误码 |  发生场景        |                              
+| Error code | Occurrence scenario |                            
 |:--------| :------                                               
 |58101    | asset name error |
 |58402    | Invalid url|   
-|4XXXX    | Ontology错误|
+|4XXXX    | Ontology error|
 
 #### queryTotalSupply
 
-* 描述
+* Description
 
-查询资产总供应量
+Query the total supply of assets
 
-* 输入参数
+* Input parameters
 
 String assetName
 
-assetName: 资产名
+assetName: Asset name
 
-* 输出参数
+* Output parameters
 
-总供应量
+The total supply of assets
 
-* 异常处理
+* Exception handling
 
-|   错误码 |  发生场景        |                              
+| Error code | Occurrence scenario |                           
 |:--------| :------                                               
 |58101    | asset name error |
 |58402    | Invalid url|   
-|4XXXX    | Ontology错误|
+|4XXXX    | Ontology error|
 
 
 ## Transaction description
