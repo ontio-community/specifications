@@ -55,26 +55,24 @@ public Account(SignatureScheme scheme) throws Exception {
         Security.addProvider(new BouncyCastleProvider());
         KeyPairGenerator gen;
         AlgorithmParameterSpec paramSpec;
-        KeyType keyType;
         signatureScheme = scheme;
-        if (scheme == SignatureScheme.SM3WITHSM2) {
-            this.keyType = KeyType.SM2;
-            this.curveParams = new Object[]{Curve.SM2P256V1.toString()};
-        } else if (scheme == SignatureScheme.SHA256WITHECDSA) {
+
+        if (scheme == SignatureScheme.SHA256WITHECDSA) {
             this.keyType = KeyType.ECDSA;
             this.curveParams = new Object[]{Curve.P256.toString()};
+        } else if (scheme == SignatureScheme.SM3WITHSM2) {
+            this.keyType = KeyType.SM2;
+            this.curveParams = new Object[]{Curve.SM2P256V1.toString()};
         }
+
         switch (scheme) {
             case SHA256WITHECDSA:
             case SM3WITHSM2:
-                keyType = KeyType.ECDSA;
-                Object[] params = new Object[]{Curve.P256.toString()};
-                curveParams = params;
-                if (!(params[0] instanceof String)) {
+                if (!(curveParams[0] instanceof String)) {
                     throw new Exception(ErrorCode.InvalidParams);
                 }
-                String curveName = (String) params[0];
-                paramSpec = new ECGenParameterSpec(curveName);//指定用于生成椭圆曲线 (EC) 域参数的参数集。
+                String curveName = (String) curveParams[0];
+                paramSpec = new ECGenParameterSpec(curveName);
                 gen = KeyPairGenerator.getInstance("EC", "BC");
                 break;
             default:
@@ -82,10 +80,9 @@ public Account(SignatureScheme scheme) throws Exception {
                 throw new Exception(ErrorCode.UnsupportedKeyType);
         }
         gen.initialize(paramSpec, new SecureRandom());
-        KeyPair keyPair = gen.generateKeyPair();//随机生成公私钥对
+        KeyPair keyPair = gen.generateKeyPair();
         this.privateKey = keyPair.getPrivate();
         this.publicKey = keyPair.getPublic();
-        this.keyType = keyType;
         this.addressU160 = Address.addressFromPubKey(serializePublicKey());
     }
 ```
@@ -94,9 +91,6 @@ public Account(SignatureScheme scheme) throws Exception {
 
 
 ```
-//生成私钥
-byte[] privateKey = ECC.generateKey();
-//根据私钥生成公钥
 public Account(byte[] data, SignatureScheme scheme) throws Exception {
         Security.addProvider(new BouncyCastleProvider());
         signatureScheme = scheme;
@@ -111,12 +105,11 @@ public Account(byte[] data, SignatureScheme scheme) throws Exception {
             case SHA256WITHECDSA:
             case SM3WITHSM2:
                 BigInteger d = new BigInteger(1, data);
-                ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec((String) params[0]);
+                ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec((String) this.curveParams[0]);
                 ECParameterSpec paramSpec = new ECNamedCurveSpec(spec.getName(), spec.getCurve(), spec.getG(), spec.getN());
                 ECPrivateKeySpec priSpec = new ECPrivateKeySpec(d, paramSpec);
                 KeyFactory kf = KeyFactory.getInstance("EC", "BC");
                 this.privateKey = kf.generatePrivate(priSpec);
-
                 org.bouncycastle.math.ec.ECPoint Q = spec.getG().multiply(d).normalize();
                 ECPublicKeySpec pubSpec = new ECPublicKeySpec(
                         new ECPoint(Q.getAffineXCoord().toBigInteger(), Q.getAffineYCoord().toBigInteger()),
