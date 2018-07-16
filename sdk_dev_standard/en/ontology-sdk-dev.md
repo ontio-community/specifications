@@ -48,6 +48,8 @@ need complete:
 
 6.send transaction
 
+7.get balance
+
 ## 2. wallet
 
 >wallet https://github.com/ontio/ontology-ts-sdk/blob/master/docs/en/Wallet_File_Specification.md 
@@ -114,7 +116,16 @@ https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/com/github/
 
 https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/com/github/ontio/smartcontract/nativevm/Ont.java
 
+You need implement build vm parameter when you make invoke contract transaction,like transfer:
+
+https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/com/github/ontio/core/scripts/ScriptBuilder.java
+
+buildNativeParams: 
+  
+  https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/com/github/ontio/smartcontract/Vm.java
+
 need complete:
+
 
 1. String sendTransfer(Account sendAcct, String recvAddr, long amount, Account payerAcct, long gaslimit, long gasprice)
 
