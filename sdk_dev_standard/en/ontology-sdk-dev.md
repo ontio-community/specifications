@@ -22,17 +22,17 @@ https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/com/github/
 
 need complete:
 
-get transaction
+1.get transaction
 
-get smartcontract
+2.get smartcontract
 
-get smartcontract event
+3.get smartcontract event
 
-get block
+4.get block
 
-get block height
+5.get block height
 
-send transaction
+6.send transaction
 
 ## 2. wallet
 
@@ -54,23 +54,25 @@ java code example:
 
 https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/com/github/ontio/sdk/manager/WalletMgr.java
 
-### identity: add update get delete
+### identity: 
 
 >account https://github.com/ontio-community/specifications/blob/master/sdk_dev_standard/en/account.md
 
 need complete:
 
-1.Generation Public and Private Key Pair with ECDSA
+1.add update get delete
 
-2.Generate a public key based on the specified private key with ECDSA
+2.Generation Public and Private Key Pair with ECDSA
 
-3.export WIF
+3.Generate a public key based on the specified private key with ECDSA
 
-4.Private key encryption and decryption with GCM, dont need CTR
+4.export WIF
 
-5.ECDSA signature
+5.Private key encryption and decryption with GCM, dont need CTR
 
-6.ECDSA verify signature
+6.ECDSA signature
+
+7.ECDSA verify signature
 
 java code example:
 
