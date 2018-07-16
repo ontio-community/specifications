@@ -16,6 +16,8 @@
    9  |  asset          |  query balance                      |   query balance ONT,ONG
    10 |  asset          |  query unbound                      |   query unbound ONG
    11 |  asset          |  withdraw ong                       |   withdraw ONG
+   12 |  rpc            |     in below                        |   
+   13 |  VM            |     build call contract parameter    |   
  ```
  
 * [Function list](#function-list)
