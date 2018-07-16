@@ -292,42 +292,44 @@ c = AESEncrypt(IV, e, sk), output c
 
 加密：
 ```
-    public String exportCtrEncryptedPrikey(String passphrase, int n) {
-        int N = n;  // the CPU/Memory cost
-        int r = 8; // block size
-        int p = 8; // parallelization
-        int dkLen = 64; //byte length of the output
-        Address script_hash = Address.addressFromPubKey(serializePublicKey());
-        String address = script_hash.toBase58();
-
-        byte[] addresshashTmp = Digest.sha256(Digest.sha256(address.getBytes()));
-        byte[] addresshash = Arrays.copyOfRange(addresshashTmp, 0, 4);
-        //使用SCRYPT生成密钥
-        byte[] derivedkey = SCrypt.generate(passphrase.getBytes(StandardCharsets.UTF_8), addresshash, N, r, p, dkLen);
-
+    public String exportGcmEncryptedPrikey(String passphrase,byte[] salt, int n) throws Exception {
+        int N = n;
+        int r = 8;
+        int p = 8;
+        int dkLen = 64;
+        if (salt.length != 16) {
+            throw new SDKException(ErrorCode.ParamError);
+        }
+        Security.addProvider(new BouncyCastleProvider());
+        byte[] derivedkey = SCrypt.generate(passphrase.getBytes(StandardCharsets.UTF_8), salt, N, r, p, dkLen);
         byte[] derivedhalf2 = new byte[32];
-        byte[] iv = new byte[16];  //初始化向量 (IV)
-        System.arraycopy(derivedkey, 0, iv, 0, 16);
+        byte[] iv = new byte[12];
+        System.arraycopy(derivedkey, 0, iv, 0, 12);
         System.arraycopy(derivedkey, 32, derivedhalf2, 0, 32);
         try {
             SecretKeySpec skeySpec = new SecretKeySpec(derivedhalf2, "AES");
-            Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
-            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, new IvParameterSpec(iv));
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            cipher.init(Cipher.ENCRYPT_MODE, skeySpec, new GCMParameterSpec(128,iv));
+            cipher.updateAAD(getAddressU160().toBase58().getBytes());
             byte[] encryptedkey = cipher.doFinal(serializePrivateKey());
             return new String(Base64.getEncoder().encode(encryptedkey));
         } catch (Exception e) {
             e.printStackTrace();
+            throw new SDKException(ErrorCode.EncriptPrivateKeyError);
         }
-        return null;
     }
 ```
 
 解密：
 ```
-    public static String getCtrDecodedPrivateKey(String encryptedPriKey, String passphrase, String address, int n, SignatureScheme scheme) throws Exception {
+    public static String getGcmDecodedPrivateKey(String encryptedPriKey, String passphrase,String address, byte[] salt, int n, SignatureScheme scheme) throws Exception {
         if (encryptedPriKey == null) {
-            throw new NullPointerException();
+            throw new SDKException(ErrorCode.EncryptedPriKeyError);
         }
+        if (salt.length != 16) {
+            throw new SDKException(ErrorCode.ParamError);
+        }
+
         byte[] encryptedkey = Base64.getDecoder().decode(encryptedPriKey);
 
         int N = n;
@@ -335,19 +337,27 @@ c = AESEncrypt(IV, e, sk), output c
         int p = 8;
         int dkLen = 64;
 
-        byte[] addresshashTmp = Digest.sha256(Digest.sha256(address.getBytes()));
-        byte[] addresshash = Arrays.copyOfRange(addresshashTmp, 0, 4);
-
-        byte[] derivedkey = SCrypt.generate(passphrase.getBytes(StandardCharsets.UTF_8), addresshash, N, r, p, dkLen);
+        byte[] derivedkey = SCrypt.generate(passphrase.getBytes(StandardCharsets.UTF_8), salt, N, r, p, dkLen);
         byte[] derivedhalf2 = new byte[32];
-        byte[] iv = new byte[16];
-        System.arraycopy(derivedkey, 0, iv, 0, 16);
+        byte[] iv = new byte[12];
+        System.arraycopy(derivedkey, 0, iv, 0, 12);
         System.arraycopy(derivedkey, 32, derivedhalf2, 0, 32);
 
-        SecretKeySpec skeySpec = new SecretKeySpec(derivedhalf2, "AES");
-        Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding");
-        cipher.init(Cipher.DECRYPT_MODE, skeySpec, new IvParameterSpec(iv));
-        byte[] rawkey = cipher.doFinal(encryptedkey);
+        byte[] rawkey = new byte[0];
+        try {
+            SecretKeySpec skeySpec = new SecretKeySpec(derivedhalf2, "AES");
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+            cipher.init(Cipher.DECRYPT_MODE, skeySpec, new GCMParameterSpec(128,iv));
+            cipher.updateAAD(address.getBytes());
+            rawkey = cipher.doFinal(encryptedkey);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SDKException(ErrorCode.encryptedPriKeyAddressPasswordErr);
+        }
+        Account account = new Account(rawkey, scheme);
+        if (!address.equals(account.getAddressU160().toBase58())) {
+            throw new SDKException(ErrorCode.encryptedPriKeyAddressPasswordErr);
+        }
         return Helper.toHexString(rawkey);
     }
 
