@@ -2,6 +2,14 @@
 # ontology sdk function list
 
 
+1. Develop a wallet file according to the wallet specification, and store the encrypted account private key of the asset account and identity in the wallet file. There is also a need for mnemonics and kestore functionality.
+
+2. Interacting with the blockchain, including querying and sending transactions.
+
+3. Transaction serialization, constructing the call smart contract bytecode.
+
+4. Complete these native smart contracts: ont, ong, ontid, auth, governance
+
  ```
       |        Module   |      function                      |     Description            
  -----|-----------------| -----------------------------------|------------------------
