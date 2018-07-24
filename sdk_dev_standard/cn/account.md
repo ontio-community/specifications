@@ -146,63 +146,37 @@ wasm 类合约				： address = 0x90 + dhash160(code)[1:]
 ```
 //根据公钥计算的address
 public static Address addressFromPubKey(byte[] publicKey) {
-      try {
-          byte[] bys = Digest.hash160(publicKey);
-          bys[0] = 0x01;
-          Address u160 = new Address(bys);
-          return u160;
-      } catch (Exception e) {
-          throw new UnsupportedOperationException(e);
-      }
-  }
-  public static Address addressFromPubKey(ECPoint publicKey) {
-        try (ByteArrayOutputStream ms = new ByteArrayOutputStream()) {
-            try (BinaryWriter writer = new BinaryWriter(ms)) {
-                writer.writeVarBytes(Helper.removePrevZero(publicKey.getXCoord().toBigInteger().toByteArray()));
-                writer.writeVarBytes(Helper.removePrevZero(publicKey.getYCoord().toBigInteger().toByteArray()));
-                writer.flush();
-                byte[] bys = Digest.hash160(ms.toByteArray());
-                bys[0] = 0x01;
-                Address u160 = new Address(bys);
-                return u160;
-            }
-        } catch (IOException ex) {
-            throw new UnsupportedOperationException(ex);
-        }
+        ScriptBuilder sb = new ScriptBuilder();
+        sb.emitPushByteArray(publicKey);
+        sb.add(ScriptOp.OP_CHECKSIG);
+        return Address.toScriptHash(sb.toArray());
     }
     //根据多重公钥计算address
    public static Address addressFromMultiPubKeys(int m, byte[]... publicKeys) throws Exception {
-        if (m <= 0 || m > publicKeys.length || publicKeys.length > 24) {
-            throw new IllegalArgumentException();
-        }
-        try (ByteArrayOutputStream ms = new ByteArrayOutputStream()) {
-            try (BinaryWriter writer = new BinaryWriter(ms)) {
-                writer.writeByte((byte) publicKeys.length);
-                writer.writeByte((byte) m);
+           return Address.toScriptHash(Program.ProgramFromMultiPubKey(m,publicKeys));
+       }
+       public static byte[] ProgramFromMultiPubKey(int m, byte[]... publicKeys) throws Exception {
+               int n = publicKeys.length;
 
-                Arrays.sort(publicKeys, (a, b) -> Helper.toHexString(a).compareTo(Helper.toHexString(b)));
-                for (int i = 0; i < publicKeys.length; i++) {
-                    System.out.println(Helper.toHexString(publicKeys[i]));
-                    writer.writeVarBytes(publicKeys[i]);
-                }
-                writer.flush();
-                byte[] bys = Digest.hash160(ms.toByteArray());
-                bys[0] = 0x02;
-                Address u160 = new Address(bys);
-                return u160;
-            }
-        } catch (IOException ex) {
-            throw new UnsupportedOperationException(ex);
+               if (m <= 0 || m > n || n > Common.MULTI_SIG_MAX_PUBKEY_SIZE) {
+                   throw new SDKException(ErrorCode.ParamError);
+               }
+               try (ScriptBuilder sb = new ScriptBuilder()) {
+                   sb.emitPushInteger(BigInteger.valueOf(m));
+                   publicKeys = sortPublicKeys(publicKeys);
+                   for (byte[] publicKey : publicKeys) {
+                       sb.emitPushByteArray(publicKey);
+                   }
+                   sb.emitPushInteger(BigInteger.valueOf(publicKeys.length));
+                   sb.add(ScriptOp.OP_CHECKMULTISIG);
+                   return sb.toArray();
+               }
+           }
+    //根据合约hex获得智能合约的address
+    public static Address AddressFromVmCode(String codeHexStr) {
+            Address code = Address.toScriptHash(Helper.hexToBytes(codeHexStr));
+            return code;
         }
-    }
-    //根据合约hex和虚拟机类型获得智能合约的address
-    public static String getCodeAddress(String codeHexStr,byte vmtype){
-        Address code = Address.toScriptHash(Helper.hexToBytes(codeHexStr));
-        byte[] hash = code.toArray();
-        hash[0] = vmtype;
-        String codeHash = Helper.toHexString(hash);
-        return codeHash;
-    }
 ```
 ## 1.3 公私钥序列化
 私钥序列化：私钥转byte[]
@@ -238,13 +212,18 @@ public static Address addressFromPubKey(byte[] publicKey) {
         P512(4, "P-512"),
         SM2P256V1(20, "sm2p256v1");
     }
-        public byte[] serializePublicKey() {
+    public byte[] serializePublicKey() {
             ByteArrayOutputStream bs = new ByteArrayOutputStream();
-            bs.write(this.keyType.getLabel());
+            BCECPublicKey pub = (BCECPublicKey) publicKey;
             try {
                 switch (this.keyType) {
                     case ECDSA:
-                        BCECPublicKey pub = (BCECPublicKey) publicKey;
+                        //bs.write(this.keyType.getLabel());
+                        //bs.write(Curve.valueOf(pub.getParameters().getCurve()).getLabel());
+                        bs.write(pub.getQ().getEncoded(true));
+                        break;
+                    case SM2:
+                        bs.write(this.keyType.getLabel());
                         bs.write(Curve.valueOf(pub.getParameters().getCurve()).getLabel());
                         bs.write(pub.getQ().getEncoded(true));
                         break;
