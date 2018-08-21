@@ -4,8 +4,14 @@
 <h1 align="center">Digital Asset Management </h1>
 <p align="center" class="version">Version 0.9.0 </p>
 
-
-# Wallet
+The outline of this document is as follows:
+* [Wallet Development Tutorials](#wallet-development-tutorials)
+	* [1. Wallet](#1-wallet)
+	* [2. RPC](#2-rpc)
+	* [3. Account](#2-account)
+	* [4. Native Asset](#3-native-asset)
+	
+# 1. Wallet
 
 Wallet is a data storing file in JSON format. In Ontology, Wallet can store not only the digital identity but also digital assets.
 
@@ -22,6 +28,45 @@ Users only need to pass the name of their wallets.
 import {Wallet} from 'ontology-ts-sdk';
 var wallet = Wallet.create('my_wallet')
 ````
+
+## Manager Wallet
+
+ add/remove account
+ 
+````
+wallet.addAccount(account)
+
+````
+
+# 2. RPC
+
+## RPC interface function list
+
+
+ |      | Main   Function                                        |
+ | :--- | :----------------------------------------------------- |
+ | 1    | get_version()                                          |
+ | 2    | get_block_by_hash (block_hash)                         |
+ | 3    | get_block_by_height (block_height)                     |
+ | 4    | get_block_count ()                                     |
+ | 5    | get_current_block_hash ()                              |
+ | 6    | get_block_hash_by_height (block_height)                |
+ | 7    | get_balance (account_address)                          |
+ | 8    | get_allowance (account_address)                        |
+ | 9    | get_storage (contract_address, key)                    |
+ | 10   | get_smart_contract_event_by_tx_hash (transaction_hash) |
+ | 11   | get_smart_contract_event_by_height (block_height)      |
+ | 12   | get_raw_transaction (transaction_hash)                 |
+ | 13   | get_smart_contract (contract_address)                  |
+ | 14   | get_merkle_proof (transaction_hash)                    |
+ | 15   | send_raw_transaction (transaction)                     |
+ | 16   | send_raw_transaction_pre_exec (transaction)            |
+ | 17   | get_node_count ()                                      |
+ | 18   | get_gas_price ()                                       |
+
+# 3. Account
+Account is used to manage user's assets.
+
 
 ## Create a random account
 
@@ -62,34 +107,6 @@ wallet.addAccount(account)
 |   payer | Payer's address to pay for the transaction gas.|
 
 
-## Create an account from mnemonic code
-
-
-
-## Create an account from WIF 
-
-
-## import account
-
-
-## import and export keystore
-
-
-# Account
-Account is used to manage user's assets.
-
-
-##  Create an Account
-
-````
-import {Account} from 'ontology-ts-sdk'
-//@param {PrivateKey} The user's private key
-//@param {string} The user's password
-//@param {string} Optional. Name of the account
-//@param {object} Optional parameter. The encryption algorithm object.
-var account = Account.create(privateKey, password, label, params)
-````
-
 ## Import an Account
 
 Users can import an account by the backup data.
@@ -112,9 +129,30 @@ try {
 }
 ````
 
+## Create an account from mnemonic code
+
+````
+
+````
+
+## Create an account from WIF 
+
+````
 
 
-# Native Asset
+````
+
+
+## import and export keystore
+
+````
+
+
+````
+
+
+
+# 4. Native Asset
 
 There are two kinds of native asset in Ontology: ONT and ONG.
 
@@ -128,12 +166,11 @@ TOKEN_TYPE = {
 }
 ````
 
-## Query Balance
+## Query 
 
 We can use RESTful API, RPC API and WebSocket API to query the balance. Here we use RESTful API as example.
 
-### Example:
-
+### Query Balance
 ````typescript
 const address = new Address('AXpNeebiUZZQxLff6czjpHZ3Tftj8go2TF');
 const rest = new RestClient();
@@ -143,6 +180,11 @@ rest.getBalance(address).then(res -> {
 ````
 The result contains balance of ONT and ONG.
 
+### Query Unbound ong
+
+````
+
+````
 
 ## Transfer asset
 
