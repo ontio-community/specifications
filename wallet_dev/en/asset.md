@@ -18,7 +18,7 @@ Wallet is a data storing file in JSON format. In Ontology, Wallet can store not 
 [Wallet Specification](Wallet_Specification_en.md)
 
 
-## Create a Wallet
+## 1.1 Create a Wallet
 
 Users could create their wallet from scratch.
 
@@ -29,46 +29,20 @@ import {Wallet} from 'ontology-ts-sdk';
 var wallet = Wallet.create('my_wallet')
 ````
 
-## Manager Wallet
+## 1.2 Manager Wallet
 
- add/remove account
- 
+ add account
+
 ````
 wallet.addAccount(account)
 
 ````
 
-# 2. RPC
-
-## RPC interface function list
-
-
- |      | Main   Function                                        |
- | :--- | :----------------------------------------------------- |
- | 1    | get_version()                                          |
- | 2    | get_block_by_hash (block_hash)                         |
- | 3    | get_block_by_height (block_height)                     |
- | 4    | get_block_count ()                                     |
- | 5    | get_current_block_hash ()                              |
- | 6    | get_block_hash_by_height (block_height)                |
- | 7    | get_balance (account_address)                          |
- | 8    | get_allowance (account_address)                        |
- | 9    | get_storage (contract_address, key)                    |
- | 10   | get_smart_contract_event_by_tx_hash (transaction_hash) |
- | 11   | get_smart_contract_event_by_height (block_height)      |
- | 12   | get_raw_transaction (transaction_hash)                 |
- | 13   | get_smart_contract (contract_address)                  |
- | 14   | get_merkle_proof (transaction_hash)                    |
- | 15   | send_raw_transaction (transaction)                     |
- | 16   | send_raw_transaction_pre_exec (transaction)            |
- | 17   | get_node_count ()                                      |
- | 18   | get_gas_price ()                                       |
-
-# 3. Account
+# 2. Account
 Account is used to manage user's assets.
 
 
-## Create a random account
+## 2.1 Create a random account
 
 We can generate a random private key with specific keypair algorithm and elliptic curve. There are three kinds of algorithms we support:
 
@@ -76,21 +50,22 @@ We can generate a random private key with specific keypair algorithm and ellipti
 * SM2
 * EDDSA
 
-ECDSA is the default one. You can check TS SDK API reference for info.
+ECDSA is the default one. You can check TS SDK API reference for more info.
 
 Then we can create the account and add it to the wallet.
 
 ````
 import {Account, Crypto} from 'ontology-ts-sdk';
-import { Crypto } from 'ontology-ts-sdk';
 
 cont keyType = Crypto.KeyType.ECDSA;
-
-const keyParameters = new Crypto.KeyParameters(Crypto.CurveLabel.SECP256r1);
-
-const privateKey = Crypto.PrivateKey.random(keyType, keyParameters)
-
-var account = Account.create( privateKey, password, name );
+const privateKey = Crypto.PrivateKey.random();
+const params = {
+    cost: 4096,
+    blockSize: 8,
+    parallel: 8,
+    size: 64
+}
+var account = Account.create( privateKey, password, name, params );
 
 wallet.addAccount(account)
 
@@ -101,13 +76,10 @@ wallet.addAccount(account)
 |   privateKey      | An instance of class PrivateKey..|
 |   password      | User's password to encrypt the private key. |
 |   name       |  Name of the account. |
-|   amount   | ONG  Need to multiply 1e9 to keep precision.|
-|   gasPrice | Gas price.|
-|   gasLimit | Gas limit.|
-|   payer | Payer's address to pay for the transaction gas.|
+|   params   | Parameters used to encrypt the privatekey. |
 
 
-## Import an Account
+## 2.2 Import an Account
 
 Users can import an account by the backup data.
 
@@ -115,7 +87,7 @@ This method will check the password and the private key, an error will be thrown
 
 ````
 import { Account } from 'ontology-ts-sdk'
-//@param label {srint} Name of the account
+//@param label {string} Name of the account
 //@param encryptedPrivateKey {PrivateKey} The encrypted private key
 //@param password {string} The password used to decrypt private key
 //@param address {Address} The address of the account
@@ -129,30 +101,72 @@ try {
 }
 ````
 
-## Create an account from mnemonic code
+## 2.3 Create an account from mnemonic code
+
+Users can use the menmonic code to create an account. The BIP44 path Ontology uses is "m/44'/1024'/0'/0/0".
+
+````
+import { Account } from 'ontology-ts-sdk';
+//@param label {string} Name of the account;
+//@param mnemonic {string} User's mnemonic;
+//@param password {string} Usr's password to encrypt the private key
+//@param params? {ScryptParams} Optional scrypt params to encrypt the private key
+var account;
+try {
+    account = Account.importWithMnemonic(label, mnemonic, password, params);
+} catch(error) {
+    //mnemonic is invalid
+}
+````
+
+## 2.4 Create an account from WIF 
+
+````
+import {Crypto, Account} from 'ontology-ts-sdk';
+//@param wif {string} User's WIF
+//@param password {string} User's password
+//@param name {string} Name of account;
+//@param params {ScryptParams} Optional scrypt params to encrypt the private key
+
+//get private key from WIF
+const privateKey = Crypto.PrivateKey.deserializeWIF(wif);
+const account = Account.create(privateKey, password, name, params);
+````
+
+## 2.5 Import and export keystore
+
+Keystore is  a data structure to backup user's account.And it can saved in QR code.Then users can use mobile to scan that QR code to read the data and recover the account. You can check the [Wallet Specification](Wallet_Specification_en.md) to see more info.
+
+#### Export keystore
+
+````
+//Suppose we have an account object
+//export keystore
+const keystore = {
+            type: 'A', // Implies this is an account 
+            label: obj.label, // Name of the account
+            algorithm: 'ECDSA', // The algorithm of the key-pair generation
+            scrypt: { // Scrypt parameters used to encrypt the private key
+                n: 4096,
+                p: 8,
+                r: 8,
+                dkLen: 64
+            },
+            key: obj.encryptedKey.key, //Encrypted private key
+            salt: obj.salt, // Salt used to encrypt private key
+            address: obj.address.toBase58(), // Address used to encrypt private key
+            parameters: { // Parameters used in key-pair generation algorithm
+                curve: 'secp256r1'
+            }
+        };
 
 ````
 
-````
+#### Import keystore
 
-## Create an account from WIF 
+The process is the same as **2.2 Import An Account**
 
-````
-
-
-````
-
-
-## import and export keystore
-
-````
-
-
-````
-
-
-
-# 4. Native Asset
+# 3. Native Asset
 
 There are two kinds of native asset in Ontology: ONT and ONG.
 
@@ -166,36 +180,114 @@ TOKEN_TYPE = {
 }
 ````
 
-## Query 
+## 3.1 Query 
 
-We can use RESTful API, RPC API and WebSocket API to query the balance. Here we use RESTful API as example.
+We can use RESTful API, RPC API and WebSocket API to query the balance. Here we use RESTful API as example. And we have explorer apis that are more easy to use.
 
-### Query Balance
+### 3.1.1 Query Balance
 ````typescript
 const address = new Address('AXpNeebiUZZQxLff6czjpHZ3Tftj8go2TF');
-const rest = new RestClient();
-rest.getBalance(address).then(res -> {
+const nodeUrl = 'http://polaris1.ont.io:20334' // Testnet
+const rest = new RestClient(nodeUrl); // Query the balance on testnet
+rest.getBalance(address).then(res => {
 	console.log(res)
 })
 ````
 The result contains balance of ONT and ONG.
 
-### Query Unbound ong
+### 3.1.2 Query Unbound ong
+
+There is one useful api from our explorer that can be used to query all the balance of an address.It includes
+
+ONT, ONG, claimable ONG and unbound ONG.
+
+For testnet, api host is  https://polarisexplorer.ont.io
+
+For mainnet, dapi host is https://explorer.ont.io
 
 ````
-
+/api/v1/explorer/address/balance/{address}
+method：GET
+{
+    "Action": "QueryAddressBalance",
+    "Error": 0,
+    "Desc": "SUCCESS",
+    "Version": "1.0",
+    "Result": [
+        {
+            "Balance": "138172.922008484",
+            "AssetName": "ong"
+        },
+        {
+            "Balance": "14006.83021186",
+            "AssetName": "waitboundong"// This is the unbound ONG
+        },
+        {
+            "Balance": "71472.14798338",
+            "AssetName": "unboundong" // This is the claimable ONG
+        },
+        {
+            "Balance": "8637767",
+            "AssetName": "ont"
+        }
+    ]
+}
 ````
 
-## Transfer asset
+### 3.1.3 Query Transaction history
+
+We can use the explorer api to fetch the transaction history of an address with pagination.
+
+````
+url：/api/v1/explorer/address/{address}/{assetname}/{pagesize}/{pagenumber}
+method：GET
+successResponse：
+{
+    "Action":"QueryAddressInfo",
+    "Version":"1.0",
+    "Error":0,
+    "Desc":"SUCCESS",
+    "Result":{
+        "AssetBalance":[
+            {
+                "AssetName":"ont",
+                "Balance":"123.200000000"
+            }
+        ],
+        "TxnTotal":20,
+        "TxnList":[
+            {
+                "TxnHash":"09e599ecde6eec18608bdecd0cf0a54b02bc9d55239e1b1bd291558e5a6ef3fa",
+                "ConfirmFlag":1,
+                "TxnType":208,
+                "TxnTime":1522207168,
+                "Height":11,
+                "Fee":"0.010000000",
+                "BlockIndex":1,
+                "TransferList": [
+                    {
+                        "Amount": "100.000000000",
+                        "FromAddress": "AA5NzM9iE3VT9X8SGk5h3dii6GPFQh2vme",
+                        "ToAddress":"AA8fwY3wWhit3bnsAKRdoiCsKqp2qr4VBx",
+                        "AssetName":"ont"
+                    }
+                ]
+            }
+        ]
+    }
+}
+````
+
+## 3.2 Transfer asset
 
 ### Create transfer transaction
 
-First we need to create the transaction for transfer.
+First we need to create the transaction for transfer. 
 
 ````typescript
 import {OntAssetTxBuilder} from 'ontology-ts-sdk'
 //supppose we have an account with enough ONT and ONG
-//Sender's address
+//Sender's address, instance of class Address
 const from = account.address;
 //Receiver's address
 const to = new Address('AXpNeebiUZZQxLff6czjpHZ3Tftj8go2TF')
@@ -222,13 +314,11 @@ const tx = OntAssetTxBuilder.makeTransferTx(assetType, from, to, amount, gasPric
 |   payer | Payer's address to pay for the transaction gas.|
 
 
-
-
-## Withdraw ong
+## 3.3 Withdraw ong
 
 ### Create withdraw transaction
 
-Withdraw generated ONG from user's account address and send to other address. They can be the same address.
+Withdraw generated ONG from user's account address and send to other address. They can be the same address. Users can only withdraw the claimable ONG.
 
 ````typescript
 import {OntAssetTxBuilder} from 'ontology-ts-sdk'
@@ -252,9 +342,9 @@ const tx = OntAssetTxBuilder.makeWithdrawOngTx(from, to, amount, payer, gasPrice
 |   gasLimit | Gas limit.|
 |   payer | Payer's address to pay for the transaction gas.|
 
+## 3.4 Sign and Send transaction
 
-
-## Sign and Send transaction
+We use private key to sign transaction.
 
 We can use RESTful API, RPC API, or WebSocket API to send a transaction. Here we use RESTful API as an example.
 
@@ -270,6 +360,8 @@ import {RestClient, CONST, TransactionBuilder} from 'ontology-ts-sdk'
 //we have to sign the transaction before sent it
 //Use user's private key to sign the transaction
 TransactionBuilder.signTransaction(tx, privateKey)
+//If the transaction needs more than one signatures. We can add signature to it.
+//TransactionBuilder.addSign(tx, otherPrivateKey)
 
 const rest = new RestClient(CONST.TEST_ONT_URL.REST_URL);
 rest.sendRawTransaction(tx.serialize()).then(res => {
@@ -279,22 +371,6 @@ rest.sendRawTransaction(tx.serialize()).then(res => {
 ````
 
 > Use WebSocket API and wait for the transaction notice.
-
-````typescript
-import {RestClient, CONST, TransactionBuilder} from 'ontology-ts-sdk'
-
-//we already got the transaction we created before
-
-//we have to sign the transaction before sent it
-//Use user's private key to sign the transaction
-TransactionBuilder.signTransaction(tx, privateKey)
-
-const rest = new RestClient(CONST.TEST_ONT_URL.REST_URL);
-rest.sendRawTransaction(tx.serialize()).then(res => {
-	console.log(res)	
-})
-
-````
 
 The result may look like:
 
@@ -310,4 +386,5 @@ The result may look like:
 
 The `Result` of the response is the transaction hash, it can be used to query the event of the transaction.
 
-Then we can query the balance to check if the withdraw succeeded.
+Then we can query the balance to check if the transaction succeeded.
+
