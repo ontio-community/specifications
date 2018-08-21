@@ -6,12 +6,12 @@
 
 The outline of this document is as follows:
 * [Wallet Development Tutorials](#wallet-development-tutorials)
-	* [1. Wallet](#1-wallet)
-	* [2. RPC](#2-rpc)
-	* [3. Account](#2-account)
-	* [4. Native Asset](#3-native-asset)
-	
-# 1. Wallet
+  * [1. Wallet](#1-wallet)
+  * [2. Account](#2-account)
+  * [3. Native Asset](#3-native-asset)
+  * [4.Blockchain](#4-blockchain)
+
+# 1 Wallet
 
 Wallet is a data storing file in JSON format. In Ontology, Wallet can store not only the digital identity but also digital assets.
 
@@ -38,7 +38,7 @@ wallet.addAccount(account)
 
 ````
 
-# 2. Account
+# 2 Account
 Account is used to manage user's assets.
 
 
@@ -119,6 +119,23 @@ try {
 }
 ````
 
+### How to generate mnemonic?
+
+```
+import { utils } from 'ontology-ts-sdk'
+//@param size {number} The length of bytes for derived key.16 is the default value.
+const mnemonic = utils.generateMnemonic(size);
+```
+
+### Genera private key from mnemonic?
+
+```
+import {Crypto} from 'ontology-ts-sdk'
+//@param mnemonic {string} Space separated words
+//@param derivePath {string} Default value is "m/44'/1024'/0'/0/0"
+const privateKey = Crypto.PrivateKey.generateFromMnemonic(mnemonic, derivePath)
+```
+
 ## 2.4 Create an account from WIF 
 
 ````
@@ -166,7 +183,7 @@ const keystore = {
 
 The process is the same as **2.2 Import An Account**
 
-# 3. Native Asset
+# 3 Native Asset
 
 There are two kinds of native asset in Ontology: ONT and ONG.
 
@@ -387,4 +404,37 @@ The result may look like:
 The `Result` of the response is the transaction hash, it can be used to query the event of the transaction.
 
 Then we can query the balance to check if the transaction succeeded.
+
+## 4 Blockchain 
+
+Users can use restful api, rpc api or websocket api to access info from the blockchain.Here we use restful api for example.The result is promise.
+
+```
+import {RestClient} from 'ontology-ts-sdk'
+
+const rest = new RestClient();
+
+//@param hexData {string} Hex encoded data of transaction
+//@param preExec {boolean} Default value is false.Decides if it is pre execution.
+//@param userId {string} Not necessary
+rest.sendRawTransaction(hexData, preExec, userId)
+
+rest.getRawTransaction(txHash: string)
+
+rest.getNodeCount()
+
+rest.getBlockHeight()
+
+rest.getContract(codeHash: string)
+
+//Get the transaction execution result
+//@param value {string|number} The transaction hash or the block height.
+rest.getSmartCodeEvent(value: string | number)
+
+rest.getStorage(codeHash: string, key: string)
+
+rest.getBalance(address: Address)
+
+rest.getAllowance(asset: string, from: Address, to: Address)
+```
 
