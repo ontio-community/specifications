@@ -1,59 +1,59 @@
-# Ontology Wallet Integration
-
-include asset and digital identity.
+# Ontology 
 
 Content：
 
 * [Ontology Wallet](#ontology-wallet)
-    * [Wallet](#wallet)
-	* [SDK](#sdk)
+    * [Wallet Specification](#wallet-specification)
+	* [Java SDK](#java-sdk)
 	    * [Blockchain](#blockchain)
 	    	* [1. Initial](#1-initial)
         	* [2. Query](#2-query)
         		* [Query ONT/ONG balance](#query-ont/ong-balance)
         		* [Query transaction in transaction pool](#query-transaction-in-transaction-pool)
         		* [Query transaction success](#Query-transaction-success)
-        	* [3. other interface：](#3-other-interface)
+        	* [3. Other interface：](#3-other-interface)
 		* [Account](#account)
 			* [Mnemonic code and keystore](#Mnemonic-code-and-keystore)
-			* [random create account](#random-create-account)
-			* [create account by privatekey](#create-account-by-privatekey)
-			* [create account by WIF](#create-account-by-wif)
-		    * [address](#address)
+			* [Random create account](#random-create-account)
+			* [Create account by privatekey](#create-account-by-privatekey)
+			* [Create account by WIF](#create-account-by-wif)
+		    * [Address](#address)
 		* [Native asset](#native-asset)
 			* [1. ONT transfer](#1-ont-transfer)
                 * [ONT transfer](#ont-transfer)
 			* [2. ONG transfer](#2-ong-transfer)
 				* [ONG transfer](#ong-transfer)
-				* [withdraw ONG](#withdraw-ong)
-			* [3. make transfer by yourself](#3-make-transfer-by-yourself)
-				* [transfer](#transfer)
-            	* [signature](#signature)
-            	* [multi-state signature](#multi-state-signature)
+				* [Withdraw ONG](#withdraw-ong)
+			* [3. Make transfer by yourself](#3-make-transfer-by-yourself)
+				* [Transfer](#transfer)
+            	* [Signature](#signature)
+            	* [Multi-state signature](#multi-state-signature)
         * [Digital identity](#digital-identity)
-        	* [registry](#registry)
-        	* [get ddo](#get-ddo)
+        	* [Registry](#registry)
+        	* [Query identity](#query-identity)
 	* [Ontology node](#ontology-node)
     * [Native contract address](#native-contract-address)		
 
 
 ​
-## Wallet 
+## Wallet Specification
 
-include asset and digital identity.
+Wallet include asset and digital identity. Wallet Specification：[wallet](Wallet_Specification_en.md)
 
-
-## SDK
+These sdk implementations wallet specification Currently:
 
 Java SDK ：[Java SDK](https://github.com/ontio/ontology-java-sdk/blob/master/docs) 
 
-Ts SDK ：[Ts SDK](https://github.com/ontio/ontology-ts-sdk/tree/master/docs) 
+Typescript SDK ：[Ts SDK](https://github.com/ontio/ontology-ts-sdk/tree/master/docs) 
 
 Android SDK ：[Android SDK](https://github.com/ontio-community/ontology-andriod-sdk)
 
-Go SDK ：[Go SDK](https://github.com/ontio/ontology-go-sdk) 
+Golang SDK ：[Go SDK](https://github.com/ontio/ontology-go-sdk) 
 
-Wallet Specification：[wallet](Wallet_Specification_en.md)
+Python SDK ：[Python SDK](https://github.com/ontio/ontology-python-sdk)
+
+
+## Java SDK
 
 The example below is in Java, android sdk the same with java sdk.
 
@@ -200,7 +200,7 @@ response:
 
 ```
 
-#### 3. other interface：
+#### 3. Other interface：
 
 | No   |                    Main   Function                     |     Description      |
 | ---- | :----------------------------------------------------: | :------------------: |
@@ -266,21 +266,21 @@ Account acct2 = new Account(prikey2,SignatureScheme.SHA256WITHECDSA);
  ```
 
 
-#### random create account
+#### Random create account
 
 ```
 com.github.ontio.sdk.wallet.Account acct = ontSdk.getWalletMgr().createAccount("name","password");
 ontSdk.getWalletMgr().writeWallet();
 ```
 
-#### create account by privatekey
+#### Create account by privatekey
 
 ```
 com.github.ontio.sdk.wallet.Account acct = ontSdk.getWalletMgr().createAccountFromPriKey("name",prikey,"password");
 ontSdk.getWalletMgr().writeWallet();
 ```
 
-#### create account by WIF
+#### Create account by WIF
 
 ```
 
@@ -292,7 +292,7 @@ ontSdk.getWalletMgr().writeWallet();
 
 
 
-#### address
+#### Address
 
 single signature address and multi-signature address。
 
@@ -357,7 +357,7 @@ ontSdk.nativevm().ong().sendTransfer(acct0,"AUe2KKPnNMnM7hLHj6dEPJ4PA2m4pyJt2d",
 
 ```
 
-##### withdraw ONG
+##### Withdraw ONG
 
 1. query unboundOng
 2. withdrawOng
@@ -380,7 +380,7 @@ String hash = sdk.nativevm().ong().withdrawOng(account,toAddr,64000L,payerAcct,3
 
 ### Digital identity
 
-##### registry
+##### Registry
 
 example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/NativeOntIdDemo.java)
 
@@ -391,7 +391,7 @@ ontSdk.nativevm().ontId().sendRegister(identity,password,payerAcct,ontSdk.DEFAUL
  
 ```
 
-##### query identity
+##### Query identity
 
 example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/NativeOntIdDemo.java)
 
@@ -401,11 +401,11 @@ String ddo2 = ontSdk.nativevm().ontId().sendGetDDO(identity.ontid);
  
 ```
 
-### 3. make transfer by yourself
+### 3. Make transfer by yourself
 
 example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/MakeTxWithoutWalletDemo.java)
 
-##### transfer
+##### Transfer
 
 ```
 
@@ -435,7 +435,7 @@ ontSdk.getConnect().sendRawTransaction(tx.toHexString());
 | makeTransfer | String sender，String recvAddr,long amount,String payer,long gaslimit,long gasprice | sender,to,amount,payer,gaslimit,gasprice |
 | makeTransfer | State\[\] states,String payer,long gaslimit,long gasprice    | multi state                                   |
 
-##### signature
+##### Signature
 
 if sender is different with payer, both of them need signature transaction.
 
@@ -450,7 +450,7 @@ ontSdk.addMultiSign(tx,2,new com.github.ontio.account.Account[]{acct0,acct1});
 
 
 
-##### multi-state transfer
+##### Multi-state transfer
 
 1. contruct multi state
 2. signature
