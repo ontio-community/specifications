@@ -5,7 +5,7 @@ include asset and digital identity.
 Content：
 
 * [Ontology Wallet](#ontology-wallet)
-    * [wallet development](#wallet development)
+    * [wallet development](#wallet-development)
 	* [SDK](#sdk)
 	    * [blockchain](#blockchain)
 	    	* [1. init](#1-init)
@@ -15,10 +15,10 @@ Content：
         		* [Query transaction success](#Query-transaction-success)
         	* [3. other interface：](#3-other-interface)
 		* [Account manager](#account-manager)
-			* [Mnemonic code and keystore：](#Mnemonic-code-and-keystore)
-			* [random create account：](#random-create-account)
+			* [Mnemonic code and keystore](#Mnemonic-code-and-keystore)
+			* [random create account](#random-create-account)
 			* [create account by privatekey](#create-account-by-privatekey)
-			* [create account by WIF：](#create-account-by-WIF)
+			* [create account by WIF](#create-account-by-WIF)
 		    * [address](#address)
 		* [Native asset](#native-asset)
 			* [1. ONT transfer](#1-ont-transfer)
@@ -227,7 +227,9 @@ response:
 
 ### Account manager
 
-#### Mnemonic code and keystore：
+#### Mnemonic code and keystore
+
+Users can use the menmonic code to create an account. The BIP44 path Ontology uses is "m/44'/1024'/0'/0/0".
 
 Mnemonic code
 ```
@@ -244,7 +246,8 @@ com.github.ontio.sdk.wallet.Account acct = ontSdk.getWalletMgr().createAccountFr
 
 ```
 
-keystore
+Keystore is  a data structure to backup user's account.And it can saved in QR code.Then users can use mobile to scan that QR code to read the data and recover the account. You can check the [Wallet Specification](Wallet_Specification_en.md) to see more info.
+
 ```
 //get keystore
 Scrypt scrypt = new Scrypt();
@@ -263,7 +266,7 @@ Account acct2 = new Account(prikey2,SignatureScheme.SHA256WITHECDSA);
  ```
 
 
-#### random create account：
+#### random create account
 
 ```
 com.github.ontio.sdk.wallet.Account acct = ontSdk.getWalletMgr().createAccount("name","password");
@@ -299,7 +302,7 @@ String privatekey0 = "c19f16785b8f3543bbaf5e1dbb5d398dfa6c85aaad54fc9d71203ce83e
 String privatekey1 = "49855b16636e70f100cc5f4f42bc20a6535d7414fb8845e7310f8dd065a97221";
 String privatekey2 = "1094e90dd7c4fdfd849c14798d725ac351ae0d924b29a279a9ffa77d5737bd96";
 
-//生成账号，获取地址
+//
 com.github.ontio.account.Account acct0 = new com.github.ontio.account.Account(Helper.hexToBytes(privatekey0), ontSdk.defaultSignScheme);
 Address sender = acct0.getAddressU160();
 
@@ -317,7 +320,7 @@ Address recvAddr = Address.addressFromMultiPubKeys(2, acct1.serializePublicKey()
 
 | Function                  | Params                      | Desc                       |
 | :---------------------- | :------------------------ | :----------------------------- |
-| addressFromMultiPubkeys | int m,byte\[\]... pubkeys | 最小验签个数(<=公钥个数)，公钥 |
+| addressFromMultiPubkeys | int m,byte\[\]... pubkeys | M,pubkey |
 
 ### Native asset
 
@@ -336,7 +339,7 @@ String hash = ontSdk.nativevm().ont().sendTransfer(acct0,"AUe2KKPnNMnM7hLHj6dEPJ
 ```
 | Function       | Params                                                     | Desc                       |
 | :----------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
-| sendTransfer | String sendTransfer(Account sendAcct, String recvAddr, long amount, Account payerAcct, long gaslimit, long gasprice) | 发送方账户，接收方地址，金额，网络费付款人账户，gaslimit，gasprice |
+| sendTransfer | String sendTransfer(Account sendAcct, String recvAddr, long amount, Account payerAcct, long gaslimit, long gasprice) | sendAcct,recvAddr,amount,payer,gaslimit,gasprice |
 
 
 
@@ -370,7 +373,7 @@ String hash = sdk.nativevm().ong().withdrawOng(account,toAddr,64000L,payerAcct,3
 
 | Function      | Params                      | Desc                       |
 | :----------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
-| withdrawOng | String claimer,String to,long amount,String payer,long gaslimit,long gasprice | from，to，amount，payer，gaslimit，gasprice |
+| withdrawOng | String claimer,String to,long amount,String payer,long gaslimit,long gasprice | from,to,amount,payer,gaslimit,gasprice |
 
 
 ### Digital identity
@@ -427,8 +430,8 @@ ontSdk.getConnect().sendRawTransaction(tx.toHexString());
 
 | Function      | Params                      | Desc                       |
 | :----------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
-| makeTransfer | String sender，String recvAddr,long amount,String payer,long gaslimit,long gasprice | sender，to，amount，payer，gaslimit，gasprice |
-| makeTransfer | State\[\] states,String payer,long gaslimit,long gasprice    | multi state。                                       |
+| makeTransfer | String sender，String recvAddr,long amount,String payer,long gaslimit,long gasprice | sender,to,amount,payer,gaslimit,gasprice |
+| makeTransfer | State\[\] states,String payer,long gaslimit,long gasprice    | multi state                                   |
 
 ##### multi-state signature
 
