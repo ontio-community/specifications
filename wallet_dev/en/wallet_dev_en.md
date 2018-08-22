@@ -5,35 +5,39 @@ Content：
 * [Ontology Wallet](#ontology-wallet)
     * [Wallet Specification](#wallet-specification)
 	* [Java SDK](#java-sdk)
-	    * [Blockchain](#blockchain)
-	    	* [1. Initial](#1-initial)
-        	* [2. Query](#2-query)
+	    * [1. Blockchain](#1-blockchain)
+	    	* [1.1. Initial](#11-initial)
+        	* [1.2. Query](#12-query)
         		* [Query Unbound ong](#Query-unbound-ong)
         		* [Query Transaction history](#query-transaction-history)
-        	* [3. Other interface：](#3-other-interface)
+        	* [1.3. Other interface：](#13-other-interface)
         	    * [Query ONT/ONG balance](#query-ont/ong-balance)
                 * [Query transaction in transaction pool](#query-transaction-in-transaction-pool)
                 * [Query transaction success](#Query-transaction-success)
-		* [Account](#account)
-			* [Mnemonic code and keystore](#Mnemonic-code-and-keystore)
-			* [Random create account](#random-create-account)
-			* [Create account by privatekey](#create-account-by-privatekey)
-			* [Create account by WIF](#create-account-by-wif)
-		    * [Address](#address)
-		* [Native asset](#native-asset)
-			* [1. ONT transfer](#1-ont-transfer)
+		* [2. Account](#2-account)
+			* [2.1 Mnemonic code and keystore](#Mnemonic-code-and-keystore)
+			* [2.2 Random create account](#random-create-account)
+			* [2.3 Create account by privatekey](#create-account-by-privatekey)
+			* [2.4 Create account by WIF](#create-account-by-wif)
+		    * [2.5 Address](#address)
+		* [3. Native asset](#3-native-asset)
+			* [3.1. ONT transfer](#31-ont-transfer)
                 * [ONT transfer](#ont-transfer)
-			* [2. ONG transfer](#2-ong-transfer)
+			* [3.2. ONG transfer](#32-ong-transfer)
 				* [ONG transfer](#ong-transfer)
 				* [Withdraw ONG](#withdraw-ong)
-			* [3. Make transfer by yourself](#3-make-transfer-by-yourself)
+			* [3.3. Make transfer by yourself](#33-make-transfer-by-yourself)
 				* [Transfer](#transfer)
             	* [Signature](#signature)
             	* [Multi-state signature](#multi-state-signature)
-        * [Digital identity](#digital-identity)
-        	* [Registry](#registry)
-        	* [Query identity](#query-identity)
-        * [Node Stake](#node-stake)
+        * [4. Digital identity](#4-digital-identity)
+        	* [4.1 Registry](#41-registry)
+        	* [4.2 Query identity](#42-query-identity)
+        * [5. Node Stake](#5-node-stake)
+            * [5.1 Register Candidate Node](#51-register-candidate-node)
+            * [5.2 Unregister Candidate](#52-unregister-candidate)
+            * [5.3 Withdraw](#53-withdraw)
+            * [5.4 Quit Node](#54-quit-node)
 	* [Ontology node](#ontology-node)
     * [Native contract address](#native-contract-address)		
 
@@ -60,9 +64,9 @@ Python SDK ：[Python SDK](https://github.com/ontio/ontology-python-sdk)
 
 The example below is in Java, android sdk the same with java sdk.
 
-### BlockChain
+### 1. BlockChain
 
-#### 1. Initial
+#### 1.1 Initial
 
 ```
 String ip = "http://polaris1.ont.io"; //test net
@@ -74,7 +78,7 @@ ontSdk.setDefaultConnect(ontSdk.getRpc());
 
 ```
 
-#### 2. Query
+#### 1.2 Query
 
 ##### Query Unbound ong
 
@@ -160,7 +164,7 @@ successResponse：
 ````
 
 
-#### 3. Other interface：
+#### 1.3 Other interface：
 
 
 | No   |                    Main   Function                     |     Description      |
@@ -315,9 +319,9 @@ response:
 ```
 
 
-### Account
+### 2. Account
 
-#### Mnemonic code and keystore
+#### 2.1 Mnemonic code and keystore
 
 Users can use the menmonic code to create an account. The BIP44 path Ontology uses is "m/44'/1024'/0'/0/0".
 
@@ -356,21 +360,21 @@ Account acct2 = new Account(prikey2,SignatureScheme.SHA256WITHECDSA);
  ```
 
 
-#### Random create account
+#### 2.2 Random create account
 
 ```
 com.github.ontio.sdk.wallet.Account acct = ontSdk.getWalletMgr().createAccount("name","password");
 ontSdk.getWalletMgr().writeWallet();
 ```
 
-#### Create account by privatekey
+#### 2.3 Create account by privatekey
 
 ```
 com.github.ontio.sdk.wallet.Account acct = ontSdk.getWalletMgr().createAccountFromPriKey("name",prikey,"password");
 ontSdk.getWalletMgr().writeWallet();
 ```
 
-#### Create account by WIF
+#### 2.4 Create account by WIF
 
 ```
 
@@ -382,7 +386,7 @@ ontSdk.getWalletMgr().writeWallet();
 
 
 
-#### Address
+#### 2.5 Address
 
 single signature address and multi-signature address。
 
@@ -414,11 +418,11 @@ Address recvAddr = Address.addressFromMultiPubKeys(2, acct1.serializePublicKey()
 
 
 
-### Native asset
+### 3. Native asset
 
 
 
-#### 1. ONT tansfer
+#### 3.1 ONT tansfer
 
 example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/OntDemo.java)
 
@@ -434,7 +438,7 @@ String hash = ontSdk.nativevm().ont().sendTransfer(acct0,"AUe2KKPnNMnM7hLHj6dEPJ
 
 
 
-#### 2. ONG transfer
+#### 3.2 ONG transfer
 
 example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/OngDemo.java)
 
@@ -468,30 +472,9 @@ String hash = sdk.nativevm().ong().withdrawOng(account,toAddr,64000L,payerAcct,3
 | withdrawOng | String claimer,String to,long amount,String payer,long gaslimit,long gasprice | from,to,amount,payer,gaslimit,gasprice |
 
 
-### Digital identity
 
-##### Registry
 
-example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/NativeOntIdDemo.java)
-
-```
-
-Identity identity = ontSdk.getWalletMgr().createIdentity(password);
-ontSdk.nativevm().ontId().sendRegister(identity,password,payerAcct,ontSdk.DEFAULT_GAS_LIMIT,0);
- 
-```
-
-##### Query identity
-
-example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/NativeOntIdDemo.java)
-
-```
-
-String ddo2 = ontSdk.nativevm().ontId().sendGetDDO(identity.ontid);
- 
-```
-
-### 3. Make transfer by yourself
+### 3.3 Make transfer by yourself
 
 example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/MakeTxWithoutWalletDemo.java)
 
@@ -563,10 +546,33 @@ ontSdk.addMultiSign(tx,2,new com.github.ontio.account.Account[]{acct1, acct2});
 
 
 
+### 4. Digital identity
 
-### Node Stake
+##### 4.1 Registry
 
-#### Register Candidate Node
+example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/NativeOntIdDemo.java)
+
+```
+
+Identity identity = ontSdk.getWalletMgr().createIdentity(password);
+ontSdk.nativevm().ontId().sendRegister(identity,password,payerAcct,ontSdk.DEFAULT_GAS_LIMIT,0);
+ 
+```
+
+##### 4.2 Query identity
+
+example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/NativeOntIdDemo.java)
+
+```
+
+String ddo2 = ontSdk.nativevm().ontId().sendGetDDO(identity.ontid);
+ 
+```
+
+
+### 5. Node Stake
+
+#### 5.1 Register Candidate Node
 
 Make transaction to register candidate node.
 
@@ -583,7 +589,7 @@ String txhash = sdk.nativevm().governance().registerCandidate(account,peerPubkey
 
 ````
 
-#### Unregister Candidate
+#### 5.2 Unregister Candidate
 
 Make transaction to cancel the register.
 
@@ -593,7 +599,7 @@ String txhash = sdk.nativevm().governance().unRegisterCandidate(account,peerPubk
 
 ```
 
-#### Withdraw 
+#### 5.3 Withdraw 
 
 Make transaction to withdraw the paied ONT.
 
@@ -604,7 +610,7 @@ String txhash = sdk.nativevm().governance().withdraw(account,peerPubkeys,new lon
 
 ```
 
-#### Quit Node
+#### 5.4 Quit Node
 
 Make transaction to quit node.
 
@@ -613,7 +619,6 @@ String[] peerPubkeys = new String[]{"03e1e09221c9f513df76273f3cec0d033ee6056b159
 String txhash = sdk.nativevm().governance().quitNode(account,peerPubkey,payerAcct,gasLimit,gasPrice);
 
 ```
-
 
 ## Ontology node
 
