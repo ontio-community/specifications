@@ -1,7 +1,7 @@
 
 [中文](../cn/asset.md) | Enlish
 
-<h1 align="center">Digital Asset Management(Js sdk) </h1>
+<h1 align="center">Digital Asset Management </h1>
 <p align="center" class="version">Version 0.9.0 </p>
 
 The outline of this document is as follows:
@@ -10,6 +10,7 @@ The outline of this document is as follows:
   * [2. Account](#2-account)
   * [3. Native Asset](#3-native-asset)
   * [4.Blockchain](#4-blockchain)
+  * [5.Node Stake](5-node-stake)
 
 # 1 Wallet
 
