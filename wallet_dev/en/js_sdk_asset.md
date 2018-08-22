@@ -438,3 +438,69 @@ rest.getBalance(address: Address)
 rest.getAllowance(asset: string, from: Address, to: Address)
 ```
 
+## 5 Node Stake
+
+### 5.1 Register Candidate Node
+
+Make transaction to register candidate node.
+
+````
+import {GovernanceTxBuilder} from 'ontology-ts-sdk'
+
+//@param ontid {string} User's ONT ID
+//@param peerPubkey {string} Peer's public key
+//@param keyNo {number} Id of public key.Usually set as 1.
+//@param userAddr {Address} User's address to pay the ONT and ONG for register
+//@param initPos {number} Number of ONT to pay for register
+//@param payer {Address} User's address to pay for the transaction fee.
+//@param gasPrice {string} Usually set as '500'
+//@param gasLimit {string} Usually set as '20000'
+const tx = GovernanceTxBuilder.makeRegisterCandidate(ontid, peerPubkey, keyNo, userAddr, initPos, payer, gasPrice, gasLimit)
+````
+
+### 5.2 Unregister Candidate
+
+Make transaction to cancel the register.
+
+```
+import {GovernanceTxBuilder} from 'ontology-ts-sdk'
+
+//@param userAddr {Address} User's address that paied for the register
+//@param peerPubkey {string} Peer's public key
+//@param payer {Address} Payer to pay for the transaction fee.
+//@param gasPrice {string} Usually set as '500'
+//@param gasLimit {string} Usually set as '20000'
+const tx = GovernanceTxBuilder.makeUnregisterCandidateTx(userAddr, peerPubkey, payer, gasPrice, gasLimit)
+```
+
+### 5.3 Withdraw 
+
+Make transaction to withdraw the paied ONT.
+
+```
+import {GovernanceTxBuilder} from 'ontology-ts-sdk'
+
+//@param userAddr {Address} User's address that paied for the register
+//@param peerPubkeys {[string]} Array of peer's public keys
+//@param withdrawList {[number]} Array of ONT to withdraw
+//@param payer {Address} Payer to pay for the transaction fee.
+//@param gasPrice {string} Usually set as '500'
+//@param gasLimit {string} Usually set as '20000'
+const tx = GovernanceTxBuilder.makeWithdrawTx(userAddr, peerPubkeys, withdrawList, payer, gasPrice, gasLimit)
+```
+
+### 5.4 Quit Node
+
+Make transaction to quit node.
+
+```
+import {GovernanceTxBuilder} from 'ontology-ts-sdk'
+
+//@param userAddr {Address} User's address that paied for the register
+//@param peerPubkey {string} Array of peer's public keys
+//@param payer {Address} Payer to pay for the transaction fee.
+//@param gasPrice {string} Usually set as '500'
+//@param gasLimit {string} Usually set as '20000'
+const tx = GovernanceTxBuilder.makeQuitNodeTx(userAddr, peerPubkey, payer, gasPrice, gasLimit)
+```
+
