@@ -8,10 +8,12 @@ Content：
 	    * [Blockchain](#blockchain)
 	    	* [1. Initial](#1-initial)
         	* [2. Query](#2-query)
-        		* [Query ONT/ONG balance](#query-ont/ong-balance)
-        		* [Query transaction in transaction pool](#query-transaction-in-transaction-pool)
-        		* [Query transaction success](#Query-transaction-success)
+        		* [Query Unbound ong](#Query-unbound-ong)
+        		* [Query Transaction history](#query-transaction-history)
         	* [3. Other interface：](#3-other-interface)
+        	    * [Query ONT/ONG balance](#query-ont/ong-balance)
+                * [Query transaction in transaction pool](#query-transaction-in-transaction-pool)
+                * [Query transaction success](#Query-transaction-success)
 		* [Account](#account)
 			* [Mnemonic code and keystore](#Mnemonic-code-and-keystore)
 			* [Random create account](#random-create-account)
@@ -31,6 +33,7 @@ Content：
         * [Digital identity](#digital-identity)
         	* [Registry](#registry)
         	* [Query identity](#query-identity)
+        * [Node Stake](#node-stake)
 	* [Ontology node](#ontology-node)
     * [Native contract address](#native-contract-address)		
 
@@ -72,6 +75,117 @@ ontSdk.setDefaultConnect(ontSdk.getRpc());
 ```
 
 #### 2. Query
+
+##### Query Unbound ong
+
+There is one useful api from our explorer that can be used to query all the balance of an address.It includes
+
+ONT, ONG, claimable ONG and unbound ONG.
+
+For testnet, api host is  https://polarisexplorer.ont.io
+
+For mainnet, dapi host is https://explorer.ont.io
+
+````
+/api/v1/explorer/address/balance/{address}
+method：GET
+{
+    "Action": "QueryAddressBalance",
+    "Error": 0,
+    "Desc": "SUCCESS",
+    "Version": "1.0",
+    "Result": [
+        {
+            "Balance": "138172.922008484",
+            "AssetName": "ong"
+        },
+        {
+            "Balance": "14006.83021186",
+            "AssetName": "waitboundong"// This is the unbound ONG
+        },
+        {
+            "Balance": "71472.14798338",
+            "AssetName": "unboundong" // This is the claimable ONG
+        },
+        {
+            "Balance": "8637767",
+            "AssetName": "ont"
+        }
+    ]
+}
+````
+
+##### Query Transaction history
+
+We can use the explorer api to fetch the transaction history of an address with pagination.
+
+````
+url：/api/v1/explorer/address/{address}/{assetname}/{pagesize}/{pagenumber}
+method：GET
+successResponse：
+{
+    "Action":"QueryAddressInfo",
+    "Version":"1.0",
+    "Error":0,
+    "Desc":"SUCCESS",
+    "Result":{
+        "AssetBalance":[
+            {
+                "AssetName":"ont",
+                "Balance":"123.200000000"
+            }
+        ],
+        "TxnTotal":20,
+        "TxnList":[
+            {
+                "TxnHash":"09e599ecde6eec18608bdecd0cf0a54b02bc9d55239e1b1bd291558e5a6ef3fa",
+                "ConfirmFlag":1,
+                "TxnType":208,
+                "TxnTime":1522207168,
+                "Height":11,
+                "Fee":"0.010000000",
+                "BlockIndex":1,
+                "TransferList": [
+                    {
+                        "Amount": "100.000000000",
+                        "FromAddress": "AA5NzM9iE3VT9X8SGk5h3dii6GPFQh2vme",
+                        "ToAddress":"AA8fwY3wWhit3bnsAKRdoiCsKqp2qr4VBx",
+                        "AssetName":"ont"
+                    }
+                ]
+            }
+        ]
+    }
+}
+````
+
+
+#### 3. Other interface：
+
+
+| No   |                    Main   Function                     |     Description      |
+| ---- | :----------------------------------------------------: | :------------------: |
+| 1    |           ontSdk.getConnect().getNodeCount()           |     node count     |
+| 2    |            ontSdk.getConnect().getBlock(15)            |        get block        |
+| 3    |          ontSdk.getConnect().getBlockJson(15)          |        get block in json        |
+| 4    |       ontSdk.getConnect().getBlockJson("blockhash")       |        get block by blockhash       |
+| 5    |         ontSdk.getConnect().getBlock("blockhash")         |        get block by blockhash       |
+| 6    |          ontSdk.getConnect().getBlockHeight()          |     get Block Height     |
+| 7    |      ontSdk.getConnect().getTransaction("txhash")      |       get Transaction       |
+| 8    | ontSdk.getConnect().getStorage("contractaddress", key) |   get Storage   |
+| 9   |       ontSdk.getConnect().getBalance("address")        |       get Balance       |
+| 10   | ontSdk.getConnect().getContractJson("contractaddress") |     get Contract     |
+| 11   |       ontSdk.getConnect().getSmartCodeEvent(59)        |   get SmartContract Event   |
+| 12   |    ontSdk.getConnect().getSmartCodeEvent("txhash")     |   get SmartContract Event   |
+| 13   |  ontSdk.getConnect().getBlockHeightByTxHash("txhash")  |   get Block Height of Tx Hash   |
+| 14   |      ontSdk.getConnect().getMerkleProof("txhash")      |    get Merkle Proof    |
+| 15   | ontSdk.getConnect().sendRawTransaction("txhexString")  |       send Raw Transaction       |
+| 16   |  ontSdk.getConnect().sendRawTransaction(Transaction)   |       send Raw Transaction       |
+| 17   |    ontSdk.getConnect().sendRawTransactionPreExec()     |    send RawTransaction PreExec    |
+| 18   |  ontSdk.getConnect().getAllowance("ont","from","to")   |    get Allowance    |
+| 19   |        ontSdk.getConnect().getMemPoolTxCount()         | getMemPoolTxCount |
+| 20   |        ontSdk.getConnect().getMemPoolTxState("")         | getMemPoolTxState |
+
 
 ##### Query ONT/ONG balance
 
@@ -200,30 +314,6 @@ response:
 
 ```
 
-#### 3. Other interface：
-
-| No   |                    Main   Function                     |     Description      |
-| ---- | :----------------------------------------------------: | :------------------: |
-| 1    |           ontSdk.getConnect().getNodeCount()           |     node count     |
-| 2    |            ontSdk.getConnect().getBlock(15)            |        get block        |
-| 3    |          ontSdk.getConnect().getBlockJson(15)          |        get block in json        |
-| 4    |       ontSdk.getConnect().getBlockJson("blockhash")       |        get block by blockhash       |
-| 5    |         ontSdk.getConnect().getBlock("blockhash")         |        get block by blockhash       |
-| 6    |          ontSdk.getConnect().getBlockHeight()          |     get Block Height     |
-| 7    |      ontSdk.getConnect().getTransaction("txhash")      |       get Transaction       |
-| 8    | ontSdk.getConnect().getStorage("contractaddress", key) |   get Storage   |
-| 9   |       ontSdk.getConnect().getBalance("address")        |       get Balance       |
-| 10   | ontSdk.getConnect().getContractJson("contractaddress") |     get Contract     |
-| 11   |       ontSdk.getConnect().getSmartCodeEvent(59)        |   get SmartContract Event   |
-| 12   |    ontSdk.getConnect().getSmartCodeEvent("txhash")     |   get SmartContract Event   |
-| 13   |  ontSdk.getConnect().getBlockHeightByTxHash("txhash")  |   get Block Height of Tx Hash   |
-| 14   |      ontSdk.getConnect().getMerkleProof("txhash")      |    get Merkle Proof    |
-| 15   | ontSdk.getConnect().sendRawTransaction("txhexString")  |       send Raw Transaction       |
-| 16   |  ontSdk.getConnect().sendRawTransaction(Transaction)   |       send Raw Transaction       |
-| 17   |    ontSdk.getConnect().sendRawTransactionPreExec()     |    send RawTransaction PreExec    |
-| 18   |  ontSdk.getConnect().getAllowance("ont","from","to")   |    get Allowance    |
-| 19   |        ontSdk.getConnect().getMemPoolTxCount()         | getMemPoolTxCount |
-| 20   |        ontSdk.getConnect().getMemPoolTxState("")         | getMemPoolTxState |
 
 ### Account
 
@@ -474,7 +564,55 @@ ontSdk.addMultiSign(tx,2,new com.github.ontio.account.Account[]{acct1, acct2});
 
 
 
+### Node Stake
 
+#### Register Candidate Node
+
+Make transaction to register candidate node.
+
+````
+
+//@param ontid {string} User's ONT ID
+//@param peerPubkey {string} Peer's public key
+//@param keyNo {int} Id of public key.Usually set as 1.
+//@param payerAcct {Address} User's address to pay fee
+//@param initPos {long} Number of ONT to pay for register
+
+String peerPubkey = Helper.toHexString(account8.serializePublicKey());
+String txhash = sdk.nativevm().governance().registerCandidate(account,peerPubkey,initPos,identity.ontid,password,identity.controls.get(0).getSalt(),keyNo,payerAcct,gasLimit,gasPrice);
+
+````
+
+#### Unregister Candidate
+
+Make transaction to cancel the register.
+
+```
+String peerPubkey = Helper.toHexString(account8.serializePublicKey());
+String txhash = sdk.nativevm().governance().unRegisterCandidate(account,peerPubkey,payerAcct,gasLimit,gasPrice);
+
+```
+
+#### Withdraw 
+
+Make transaction to withdraw the paied ONT.
+
+```
+
+String[] peerPubkeys = new String[]{"03e1e09221c9f513df76273f3cec0d033ee6056b159300d7b1072fc7020eadccbb"};
+String txhash = sdk.nativevm().governance().withdraw(account,peerPubkeys,new long[]{9999},payerAcct,gasLimit,gasPrice);
+
+```
+
+#### Quit Node
+
+Make transaction to quit node.
+
+```
+String[] peerPubkeys = new String[]{"03e1e09221c9f513df76273f3cec0d033ee6056b159300d7b1072fc7020eadccbb"};
+String txhash = sdk.nativevm().governance().quitNode(account,peerPubkey,payerAcct,gasLimit,gasPrice);
+
+```
 
 
 ## Ontology node
