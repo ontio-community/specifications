@@ -1,20 +1,20 @@
-# Ontology Wallet Development
+# Ontology Wallet Integration
 
 include asset and digital identity.
 
 Content：
 
 * [Ontology Wallet](#ontology-wallet)
-    * [wallet development](#wallet-development)
+    * [Wallet](#wallet)
 	* [SDK](#sdk)
-	    * [blockchain](#blockchain)
-	    	* [1. init](#1-init)
+	    * [Blockchain](#blockchain)
+	    	* [1. Initial](#1-initial)
         	* [2. Query](#2-query)
         		* [Query ONT/ONG balance](#query-ont/ong-balance)
         		* [Query transaction in transaction pool](#query-transaction-in-transaction-pool)
         		* [Query transaction success](#Query-transaction-success)
         	* [3. other interface：](#3-other-interface)
-		* [Account manager](#account-manager)
+		* [Account](#account)
 			* [Mnemonic code and keystore](#Mnemonic-code-and-keystore)
 			* [random create account](#random-create-account)
 			* [create account by privatekey](#create-account-by-privatekey)
@@ -32,13 +32,13 @@ Content：
             	* [multi-state signature](#multi-state-signature)
         * [Digital identity](#digital-identity)
         	* [registry](#registry)
-        	* [get ddo](#get ddo)
+        	* [get ddo](#get-ddo)
 	* [Ontology node](#ontology-node)
-    * [native contract address](#native-contract-address)		
+    * [Native contract address](#native-contract-address)		
 
 
 ​
-## Wallet development
+## Wallet 
 
 include asset and digital identity.
 
@@ -59,7 +59,7 @@ The example below is in Java, android sdk the same with java sdk.
 
 ### BlockChain
 
-#### 1. init
+#### 1. Initial
 
 ```
 String ip = "http://polaris1.ont.io"; //test net
@@ -225,7 +225,7 @@ response:
 | 19   |        ontSdk.getConnect().getMemPoolTxCount()         | getMemPoolTxCount |
 | 20   |        ontSdk.getConnect().getMemPoolTxState("")         | getMemPoolTxState |
 
-### Account manager
+### Account
 
 #### Mnemonic code and keystore
 
@@ -322,9 +322,9 @@ Address recvAddr = Address.addressFromMultiPubKeys(2, acct1.serializePublicKey()
 | :---------------------- | :------------------------ | :----------------------------- |
 | addressFromMultiPubkeys | int m,byte\[\]... pubkeys | M,pubkey |
 
+
+
 ### Native asset
-
-
 
 
 
@@ -336,6 +336,7 @@ example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main
 
 ```
 String hash = ontSdk.nativevm().ont().sendTransfer(acct0,"AUe2KKPnNMnM7hLHj6dEPJ4PA2m4pyJt2d",200,payerAcct,20000,500);
+
 ```
 | Function       | Params                                                     | Desc                       |
 | :----------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
@@ -353,6 +354,7 @@ same to ONT：
 
 ```
 ontSdk.nativevm().ong().sendTransfer(acct0,"AUe2KKPnNMnM7hLHj6dEPJ4PA2m4pyJt2d",200,payerAcct,20000,500);
+
 ```
 
 ##### withdraw ONG
@@ -433,7 +435,7 @@ ontSdk.getConnect().sendRawTransaction(tx.toHexString());
 | makeTransfer | String sender，String recvAddr,long amount,String payer,long gaslimit,long gasprice | sender,to,amount,payer,gaslimit,gasprice |
 | makeTransfer | State\[\] states,String payer,long gaslimit,long gasprice    | multi state                                   |
 
-##### multi-state signature
+##### signature
 
 if sender is different with payer, both of them need signature transaction.
 
@@ -448,7 +450,7 @@ ontSdk.addMultiSign(tx,2,new com.github.ontio.account.Account[]{acct0,acct1});
 
 
 
-##### transfer
+##### multi-state transfer
 
 1. contruct multi state
 2. signature
@@ -483,7 +485,7 @@ ontSdk.addMultiSign(tx,2,new com.github.ontio.account.Account[]{acct1, acct2});
 
 
 
-## native contract address
+## Native contract address
 
 contract | contract u160 address | Address
 ---|---|---
