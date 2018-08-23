@@ -16,7 +16,7 @@ The outline of this document is as follows:
 
 # Wallet Integration
 
-Wallet include asset and digital identity. Wallet Specification：[wallet](Wallet_Specification_en.md)
+The wallet function includes digit asset account ant digital identity. [wallet Specification](Wallet_Specification_en.md)
 
 Wallet function list:
 
