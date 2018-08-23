@@ -1,51 +1,78 @@
-# Ontology 
+# Ontology Wallet Integration
+
+[中文](wallet_dev_cn.md) | Enlish
+
+<h1 align="center">Wallet Integration(Js sdk) </h1>
+<p align="center" class="version">Version 0.9.0 </p>
 
 Content：
 
-* [Ontology Wallet](#ontology-wallet)
-    * [Wallet Specification](#wallet-specification)
-	* [Java SDK](#java-sdk)
-	    * [1. Blockchain](#1-blockchain)
-	    	* [1.1 Initial](#11-initial)
-        	* [1.2 Query](#12-query)
-        		* [Query Unbound ong](#Query-unbound-ong)
-        		* [Query Transaction history](#query-transaction-history)
-        	* [1.3 Other interface：](#13-other-interface)
-        	    * [Query ONT/ONG balance](#query-ont/ong-balance)
-                * [Query transaction in transaction pool](#query-transaction-in-transaction-pool)
-                * [Query transaction success](#Query-transaction-success)
-		* [2. Account](#2-account)
-			* [2.1 Mnemonic code and keystore](#21-Mnemonic-code-and-keystore)
-			* [2.2 Random create account](#22-random-create-account)
-			* [2.3 Create account by privatekey](#23-create-account-by-privatekey)
-			* [2.4 Create account by WIF](#24-create-account-by-wif)
-		    * [2.5 Address](#25-address)
-		* [3. Native asset](#3-native-asset)
-			* [3.1 ONT transfer](#31-ont-transfer)
-                * [ONT transfer](#ont-transfer)
-			* [3.2 ONG transfer](#32-ong-transfer)
-				* [ONG transfer](#ong-transfer)
-				* [Withdraw ONG](#withdraw-ong)
-			* [3.3 Make transfer by yourself](#33-make-transfer-by-yourself)
-				* [Transfer](#transfer)
-            	* [Signature](#signature)
-            	* [Multi-state signature](#multi-state-signature)
-        * [4. Digital identity](#4-digital-identity)
-        	* [4.1 Registry](#41-registry)
-        	* [4.2 Query identity](#42-query-identity)
-        * [5. Node Stake](#5-node-stake)
-            * [5.1 Register Candidate Node](#51-register-candidate-node)
-            * [5.2 Unregister Candidate](#52-unregister-candidate)
-            * [5.3 Withdraw](#53-withdraw)
-            * [5.4 Quit Node](#54-quit-node)
-	* [Ontology node](#ontology-node)
-    * [Native contract address](#native-contract-address)		
+* [Wallet Integration](#wallet-integration)
+* [Java Sdk Tutorial](#java-sdk-tutorial)
+    * [1. Blockchain](#1-blockchain)
+        * [1.1 Initial](#11-initial)
+        * [1.2 Query](#12-query)
+            * [Query Unbound ong](#Query-unbound-ong)
+            * [Query Transaction history](#query-transaction-history)
+        * [1.3 Other interface：](#13-other-interface)
+            * [Query ONT/ONG balance](#query-ont/ong-balance)
+            * [Query transaction in transaction pool](#query-transaction-in-transaction-pool)
+            * [Query transaction success](#Query-transaction-success)
+    * [2. Account](#2-account)
+        * [2.1 Mnemonic code and keystore](#21-Mnemonic-code-and-keystore)
+        * [2.2 Random create account](#22-random-create-account)
+        * [2.3 Create account by privatekey](#23-create-account-by-privatekey)
+        * [2.4 Create account by WIF](#24-create-account-by-wif)
+        * [2.5 Address](#25-address)
+    * [3. Native asset](#3-native-asset)
+        * [3.1 ONT transfer](#31-ont-transfer)
+        * [3.2 ONG transfer](#32-ong-transfer)
+        * [3.3 Withdraw ONG](#withdraw-ong)
+        * [3.4 Make transfer by yourself](#33-make-transfer-by-yourself)
+            * [Transfer](#transfer)
+            * [Signature](#signature)
+            * [Multi-state signature](#multi-state-signature)
+    * [4. Digital identity](#4-digital-identity)
+        * [4.1 Registry](#41-registry)
+        * [4.2 Query identity](#42-query-identity)
+        * [4.3 Identity keystore](#identity-keystore)
+    * [5. Node Stake](#5-node-stake)
+        * [5.1 Register Candidate Node](#51-register-candidate-node)
+        * [5.2 Unregister Candidate](#52-unregister-candidate)
+        * [5.3 Withdraw](#53-withdraw)
+        * [5.4 Quit Node](#54-quit-node)
+* [Ontology node](#ontology-node)
+* [Native contract address](#native-contract-address)		
 
 
 ​
-## Wallet Specification
+## Wallet Integration
 
 Wallet include asset and digital identity. Wallet Specification：[wallet](Wallet_Specification_en.md)
+
+Wallet function list:
+
+| Module                |                    Sub Module                    |     Test case      |
+| ------------------    | :----------------------------------------------: | :------------------: |
+| Wallet management    |           create                                 |     Use the mnemonic words when creating wallet(Based on BIP39 and BIP44 specifications)   |
+|                       |          export                                 |    Export keystore      |
+|                      |           import                                 |   Import keystore to wallet  |
+|                      |                                                  |   Import from the mnemonic words  |
+|                      |                                                  |   Import from private key      |
+|                      |                                                  |    Import from WIF            |
+|                      |         delete                                   |   Delete wallet account     |
+|                      |        Information service                      |    Query balance of ONT&ONG |
+|                      |                                                  |   Query details of ONT&ONG  |
+|                      |                                                  |  Query unclaim ONT&ONG   |
+|    Transfer Assets   |          Transfer                                |    ONT/ONG transfer        |
+|                      |                                                  |      ONG Claim              |
+|   ONT ID management  |         Create                                   |   Create a new ONT ID and write onto blockchain   |
+|                      |        Import                                    |     Import keystore of ONT ID |
+|                      |        Export                                    |     Export keystore of ONT ID |
+|                      |       Information service                        |    Query ONT ID events , create, delete,etc.    |
+|                      |                                                  |    Query ONT ID             |
+
+
 
 These sdk implementations wallet specification Currently:
 
@@ -60,7 +87,7 @@ Golang SDK ：[Go SDK](https://github.com/ontio/ontology-go-sdk)
 Python SDK ：[Python SDK](https://github.com/ontio/ontology-python-sdk)
 
 
-## Java SDK
+## Java Sdk Tutorial
 
 The example below is in Java, android sdk the same with java sdk.
 
@@ -321,6 +348,9 @@ response:
 
 ### 2. Account
 
+
+
+
 #### 2.1 Mnemonic code and keystore
 
 Users can use the menmonic code to create an account. The BIP44 path Ontology uses is "m/44'/1024'/0'/0/0".
@@ -345,7 +375,7 @@ Keystore is  a data structure to backup user's account.And it can saved in QR co
 ```
 //get keystore
 Scrypt scrypt = new Scrypt();
-com.github.ontio.sdk.wallet.Account account = new com.github.ontio.sdk.wallet.Account();
+com.github.ontio.sdk.wallet.Account account = OntSdk.getInstance().getWalletMgr().getWallet().getAccount("address");
 //TODO change scrypt and account value
 
 //export keystore
@@ -359,15 +389,33 @@ String prikey2 = WalletQR.getPriKeyFromQrCode(JSON.toJSONString(keystore),"passw
 Account acct2 = new Account(prikey2,SignatureScheme.SHA256WITHECDSA);
  ```
 
+import keystore
+
+ ```
+ 
+String prikey2 = WalletQR.getPriKeyFromQrCode(JSON.toJSONString(keystore),"password");
+
+ ```
 
 #### 2.2 Random create account
+
 
 ```
 com.github.ontio.sdk.wallet.Account acct = ontSdk.getWalletMgr().createAccount("name","password");
 ontSdk.getWalletMgr().writeWallet();
 ```
 
+remove account from wallet:
+
+```
+
+ontSdk.getWalletMgr().getWallet().removeAccount("")
+ontSdk.getWalletMgr().writeWallet();
+
+```
+
 #### 2.3 Create account by privatekey
+
 
 ```
 com.github.ontio.sdk.wallet.Account acct = ontSdk.getWalletMgr().createAccountFromPriKey("name",prikey,"password");
@@ -388,7 +436,7 @@ ontSdk.getWalletMgr().writeWallet();
 
 #### 2.5 Address
 
-single signature address and multi-signature address。
+single signature address and multi-signature address
 
 ```
 
@@ -426,8 +474,6 @@ Address recvAddr = Address.addressFromMultiPubKeys(2, acct1.serializePublicKey()
 
 example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/OntDemo.java)
 
-##### ONT tansfer
-
 ```
 String hash = ontSdk.nativevm().ont().sendTransfer(acct0,"AUe2KKPnNMnM7hLHj6dEPJ4PA2m4pyJt2d",200,payerAcct,20000,500);
 
@@ -442,16 +488,16 @@ String hash = ontSdk.nativevm().ont().sendTransfer(acct0,"AUe2KKPnNMnM7hLHj6dEPJ
 
 example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/OngDemo.java)
 
-##### ONG transfer
+
 
 same to ONT：
 
 ```
-ontSdk.nativevm().ong().sendTransfer(acct0,"AUe2KKPnNMnM7hLHj6dEPJ4PA2m4pyJt2d",200,payerAcct,20000,500);
+String hash = ontSdk.nativevm().ong().sendTransfer(acct0,"AUe2KKPnNMnM7hLHj6dEPJ4PA2m4pyJt2d",200,payerAcct,20000,500);
 
 ```
 
-##### Withdraw ONG
+#### 3.3 Withdraw ONG
 
 1. query unboundOng
 2. withdrawOng
@@ -474,7 +520,7 @@ String hash = sdk.nativevm().ong().withdrawOng(account,toAddr,64000L,payerAcct,3
 
 
 
-### 3.3 Make transfer by yourself
+### 3.4 Make transfer by yourself
 
 example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/MakeTxWithoutWalletDemo.java)
 
@@ -568,6 +614,28 @@ example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main
 String ddo2 = ontSdk.nativevm().ontId().sendGetDDO(identity.ontid);
  
 ```
+
+##### 4.3 Identity keystore
+
+export keystore
+
+```
+//export keystore
+Scrypt scrypt = new Scrypt();
+com.github.ontio.sdk.wallet.Identity identity = OntSdk.getInstance().getWalletMgr().getWallet().getIdentity("ontid");
+Map keystore = WalletQR.exportIdentityQRCode(scrypt,identity);
+System.out.println(JSON.toJSONString(keystore));
+
+
+ ```
+
+import keystore
+
+ ```
+ 
+String prikey2 = WalletQR.getPriKeyFromQrCode(JSON.toJSONString(keystore),"password");
+
+ ```
 
 
 ### 5. Node Stake

@@ -1,15 +1,57 @@
 
 [中文](../cn/asset.md) | Enlish
 
-<h1 align="center">Digital Asset Management(Js sdk) </h1>
+<h1 align="center">Wallet Integration(Js sdk) </h1>
 <p align="center" class="version">Version 0.9.0 </p>
 
 The outline of this document is as follows:
-* [Wallet Development Tutorials](#wallet-development-tutorials)
+* [Wallet Integration](#wallet-integration)
+* [Typescript Sdk Tutorial](#typescript-sdk-tutorial)
   * [1. Wallet](#1-wallet)
   * [2. Account](#2-account)
   * [3. Native Asset](#3-native-asset)
-  * [4.Blockchain](#4-blockchain)
+  * [4. Blockchain](#4-blockchain)
+  * [5. Node Stake](#4-node-stake)
+
+# Wallet Integration
+
+Wallet include asset and digital identity. Wallet Specification：[wallet](Wallet_Specification_en.md)
+
+Wallet function list:
+
+| Module                |                    Sub Module                    |     Test case      |
+| ------------------    | :----------------------------------------------: | :------------------: |
+| Wallet management    |           create                                 |     Use the mnemonic words when creating wallet(Based on BIP39 and BIP44 specifications)   |
+|                       |          export                                 |    Export keystore      |
+|                      |           import                                 |   Import keystore to wallet  |
+|                      |                                                  |   Import from the mnemonic words  |
+|                      |                                                  |   Import from private key      |
+|                      |                                                  |    Import from WIF            |
+|                      |         delete                                   |   Delete wallet account     |
+|                      |        Information service                      |    Query balance of ONT&ONG |
+|                      |                                                  |   Query details of ONT&ONG  |
+|                      |                                                  |  Query unclaim ONT&ONG   |
+|    Transfer Assets   |          Transfer                                |    ONT/ONG transfer        |
+|                      |                                                  |      ONG Claim              |
+|   ONT ID management  |         Create                                   |   Create a new ONT ID and write onto blockchain   |
+|                      |        Import                                    |     Import keystore of ONT ID |
+|                      |        Export                                    |     Export keystore of ONT ID |
+|                      |       Information service                        |    Query ONT ID events , create, delete,etc.    |
+|                      |                                                  |    Query ONT ID             |
+
+
+
+These sdk implementations wallet specification Currently:
+
+Java SDK ：[Java SDK](https://github.com/ontio/ontology-java-sdk/blob/master/docs) 
+
+Typescript SDK ：[Ts SDK](https://github.com/ontio/ontology-ts-sdk/tree/master/docs) 
+
+Android SDK ：[Android SDK](https://github.com/ontio-community/ontology-andriod-sdk)
+
+Golang SDK ：[Go SDK](https://github.com/ontio/ontology-go-sdk) 
+
+Python SDK ：[Python SDK](https://github.com/ontio/ontology-python-sdk)
 
 # 1 Wallet
 
