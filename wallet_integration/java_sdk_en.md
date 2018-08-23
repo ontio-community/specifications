@@ -1,7 +1,7 @@
 
 [中文](wallet_dev_cn.md) | Enlish
 
-<h1 align="center">Wallet Integration(Js sdk) </h1>
+<h1 align="center">Wallet Integration</h1>
 <p align="center" class="version">Version 1.0.0 </p>
 
 The outline of this document is as follows:
