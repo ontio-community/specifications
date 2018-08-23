@@ -1,8 +1,8 @@
 
 [中文](../cn/asset.md) | Enlish
 
-<h1 align="center">Wallet Integration(Js sdk) </h1>
-<p align="center" class="version">Version 0.9.0 </p>
+<h1 align="center">Wallet Integration</h1>
+<p align="center" class="version">Version 1.0.0 </p>
 
 The outline of this document is as follows:
 * [Wallet Integration](#wallet-integration)
@@ -12,6 +12,7 @@ The outline of this document is as follows:
   * [3. Native Asset](#3-native-asset)
   * [4. Blockchain](#4-blockchain)
   * [5. Node Stake](#4-node-stake)
+* [Native contract address](#native-contract-address)
 
 # Wallet Integration
 
@@ -546,3 +547,15 @@ import {GovernanceTxBuilder} from 'ontology-ts-sdk'
 const tx = GovernanceTxBuilder.makeQuitNodeTx(userAddr, peerPubkey, payer, gasPrice, gasLimit)
 ```
 
+# Native contract address
+
+contract | contract u160 address | Address
+---|---|---
+ONT Token | 0000000000000000000000000000000000000001| AFmseVrdL9f9oyCzZefL9tG6UbvhUMqNMV
+ONG Token | 0000000000000000000000000000000000000002 | AFmseVrdL9f9oyCzZefL9tG6UbvhfRZMHJ
+ONT ID | 0000000000000000000000000000000000000003 | AFmseVrdL9f9oyCzZefL9tG6Ubvho7BUwN
+Global Params | 0000000000000000000000000000000000000004 | AFmseVrdL9f9oyCzZefL9tG6UbvhrUqmc2
+Oracle | 0000000000000000000000000000000000000005 | AFmseVrdL9f9oyCzZefL9tG6UbvhzQYRMK
+Authorization Manager(Auth) | 0000000000000000000000000000000000000006 | AFmseVrdL9f9oyCzZefL9tG6Ubvi9BuggV
+Governance | 0000000000000000000000000000000000000007 | AFmseVrdL9f9oyCzZefL9tG6UbviEH9ugK
+DDXF(Decentralized Exchange) | 0000000000000000000000000000000000000008 | AFmseVrdL9f9oyCzZefL9tG6UbviKTaSnK

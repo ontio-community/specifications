@@ -1,11 +1,10 @@
-# Ontology Wallet Integration
 
 [中文](wallet_dev_cn.md) | Enlish
 
 <h1 align="center">Wallet Integration(Js sdk) </h1>
-<p align="center" class="version">Version 0.9.0 </p>
+<p align="center" class="version">Version 1.0.0 </p>
 
-Content：
+The outline of this document is as follows:
 
 * [Wallet Integration](#wallet-integration)
 * [Java Sdk Tutorial](#java-sdk-tutorial)
@@ -41,12 +40,11 @@ Content：
         * [5.2 Unregister Candidate](#52-unregister-candidate)
         * [5.3 Withdraw](#53-withdraw)
         * [5.4 Quit Node](#54-quit-node)
-* [Ontology node](#ontology-node)
 * [Native contract address](#native-contract-address)		
 
 
 ​
-## Wallet Integration
+# Wallet Integration
 
 Wallet include asset and digital identity. Wallet Specification：[wallet](Wallet_Specification_en.md)
 
@@ -87,13 +85,13 @@ Golang SDK ：[Go SDK](https://github.com/ontio/ontology-go-sdk)
 Python SDK ：[Python SDK](https://github.com/ontio/ontology-python-sdk)
 
 
-## Java Sdk Tutorial
+# Java Sdk Tutorial
 
 The example below is in Java, android sdk the same with java sdk.
 
-### 1. BlockChain
+## 1. BlockChain
 
-#### 1.1 Initial
+### 1.1 Initial
 
 ```
 String ip = "http://polaris1.ont.io"; //test net
@@ -105,9 +103,9 @@ ontSdk.setDefaultConnect(ontSdk.getRpc());
 
 ```
 
-#### 1.2 Query
+### 1.2 Query
 
-##### Query Unbound ong
+#### Query Unbound ong
 
 There is one useful api from our explorer that can be used to query all the balance of an address.It includes
 
@@ -146,7 +144,7 @@ method：GET
 }
 ````
 
-##### Query Transaction history
+#### Query Transaction history
 
 We can use the explorer api to fetch the transaction history of an address with pagination.
 
@@ -191,7 +189,7 @@ successResponse：
 ````
 
 
-#### 1.3 Other interface：
+### 1.3 Other interface：
 
 
 | No   |                    Main   Function                     |     Description      |
@@ -218,7 +216,7 @@ successResponse：
 | 20   |        ontSdk.getConnect().getMemPoolTxState("")         | getMemPoolTxState |
 
 
-##### Query ONT/ONG balance
+#### Query ONT/ONG balance
 
 ```
 ontSdk.getConnect().getBalance("AVcv8YBABi9m6vH7faq3t8jWNamDXYytU2");
@@ -239,7 +237,7 @@ System.out.println(ontSdk.nativevm().ong().queryTotalSupply());
 
 ```
 
-##### Query transaction in transaction pool
+#### Query transaction in transaction pool
 
 ```
 ontSdk.getConnect().getMemPoolTxState("d441a967315989116bf0afad498e4016f542c1e7f8605da943f07633996c24cc")
@@ -280,7 +278,7 @@ or not in pool
 
 ```
 
-##### Query transaction success
+#### Query transaction success
 
 query smartcontract event: 
 
@@ -346,12 +344,12 @@ response:
 ```
 
 
-### 2. Account
+## 2. Account
 
 
 
 
-#### 2.1 Mnemonic code and keystore
+### 2.1 Mnemonic code and keystore
 
 Users can use the menmonic code to create an account. The BIP44 path Ontology uses is "m/44'/1024'/0'/0/0".
 
@@ -397,7 +395,7 @@ String prikey2 = WalletQR.getPriKeyFromQrCode(JSON.toJSONString(keystore),"passw
 
  ```
 
-#### 2.2 Random create account
+### 2.2 Random create account
 
 
 ```
@@ -414,7 +412,7 @@ ontSdk.getWalletMgr().writeWallet();
 
 ```
 
-#### 2.3 Create account by privatekey
+### 2.3 Create account by privatekey
 
 
 ```
@@ -422,7 +420,7 @@ com.github.ontio.sdk.wallet.Account acct = ontSdk.getWalletMgr().createAccountFr
 ontSdk.getWalletMgr().writeWallet();
 ```
 
-#### 2.4 Create account by WIF
+### 2.4 Create account by WIF
 
 ```
 
@@ -434,7 +432,7 @@ ontSdk.getWalletMgr().writeWallet();
 
 
 
-#### 2.5 Address
+### 2.5 Address
 
 single signature address and multi-signature address
 
@@ -466,11 +464,11 @@ Address recvAddr = Address.addressFromMultiPubKeys(2, acct1.serializePublicKey()
 
 
 
-### 3. Native asset
+## 3. Native asset
 
 
 
-#### 3.1 ONT tansfer
+### 3.1 ONT tansfer
 
 example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/OntDemo.java)
 
@@ -484,7 +482,7 @@ String hash = ontSdk.nativevm().ont().sendTransfer(acct0,"AUe2KKPnNMnM7hLHj6dEPJ
 
 
 
-#### 3.2 ONG transfer
+### 3.2 ONG transfer
 
 example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/OngDemo.java)
 
@@ -497,7 +495,7 @@ String hash = ontSdk.nativevm().ong().sendTransfer(acct0,"AUe2KKPnNMnM7hLHj6dEPJ
 
 ```
 
-#### 3.3 Withdraw ONG
+### 3.3 Withdraw ONG
 
 1. query unboundOng
 2. withdrawOng
@@ -520,11 +518,11 @@ String hash = sdk.nativevm().ong().withdrawOng(account,toAddr,64000L,payerAcct,3
 
 
 
-### 3.4 Make transfer by yourself
+## 3.4 Make transfer by yourself
 
 example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/MakeTxWithoutWalletDemo.java)
 
-##### Transfer
+#### Transfer
 
 ```
 
@@ -554,7 +552,7 @@ ontSdk.getConnect().sendRawTransaction(tx.toHexString());
 | makeTransfer | String sender，String recvAddr,long amount,String payer,long gaslimit,long gasprice | sender,to,amount,payer,gaslimit,gasprice |
 | makeTransfer | State\[\] states,String payer,long gaslimit,long gasprice    | multi state                                   |
 
-##### Signature
+#### Signature
 
 if sender is different with payer, both of them need signature transaction.
 
@@ -569,7 +567,7 @@ ontSdk.addMultiSign(tx,2,new com.github.ontio.account.Account[]{acct0,acct1});
 
 
 
-##### Multi-state transfer
+#### Multi-state transfer
 
 1. contruct multi state
 2. signature
@@ -592,9 +590,9 @@ ontSdk.addMultiSign(tx,2,new com.github.ontio.account.Account[]{acct1, acct2});
 
 
 
-### 4. Digital identity
+## 4. Digital identity
 
-##### 4.1 Registry
+#### 4.1 Registry
 
 example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/NativeOntIdDemo.java)
 
@@ -605,7 +603,7 @@ ontSdk.nativevm().ontId().sendRegister(identity,password,payerAcct,ontSdk.DEFAUL
  
 ```
 
-##### 4.2 Query identity
+#### 4.2 Query identity
 
 example：[demo](https://github.com/ontio/ontology-java-sdk/blob/master/src/main/java/demo/NativeOntIdDemo.java)
 
@@ -615,7 +613,7 @@ String ddo2 = ontSdk.nativevm().ontId().sendGetDDO(identity.ontid);
  
 ```
 
-##### 4.3 Identity keystore
+#### 4.3 Identity keystore
 
 export keystore
 
@@ -638,9 +636,9 @@ String prikey2 = WalletQR.getPriKeyFromQrCode(JSON.toJSONString(keystore),"passw
  ```
 
 
-### 5. Node Stake
+## 5. Node Stake
 
-#### 5.1 Register Candidate Node
+### 5.1 Register Candidate Node
 
 Make transaction to register candidate node.
 
@@ -657,7 +655,7 @@ String txhash = sdk.nativevm().governance().registerCandidate(account,peerPubkey
 
 ````
 
-#### 5.2 Unregister Candidate
+### 5.2 Unregister Candidate
 
 Make transaction to cancel the register.
 
@@ -667,7 +665,7 @@ String txhash = sdk.nativevm().governance().unRegisterCandidate(account,peerPubk
 
 ```
 
-#### 5.3 Withdraw 
+### 5.3 Withdraw 
 
 Make transaction to withdraw the paied ONT.
 
@@ -678,7 +676,7 @@ String txhash = sdk.nativevm().governance().withdraw(account,peerPubkeys,new lon
 
 ```
 
-#### 5.4 Quit Node
+### 5.4 Quit Node
 
 Make transaction to quit node.
 
@@ -688,15 +686,9 @@ String txhash = sdk.nativevm().governance().quitNode(account,peerPubkey,payerAcc
 
 ```
 
-## Ontology node
 
 
-[Ontology node](https://github.com/ontio/documentation/blob/master/exchangeDocs/Ontology%20交易所对接文档.md#1%E9%83%A8%E7%BD%B2ontology%E5%90%8C%E6%AD%A5%E8%8A%82%E7%82%B9)
-
-
-
-
-## Native contract address
+# Native contract address
 
 contract | contract u160 address | Address
 ---|---|---
